@@ -86,6 +86,7 @@ function saveState() {
 }
 
 // --- Views & Navigation ---
+const VIEW_ORDER = ['year', 'month', 'day'];
 let currentView = 'day';
 let selectedDateISO = TODAY_ISO;
 let viewYear = todayObj.getFullYear();
@@ -100,6 +101,43 @@ function switchView(view) {
   if (view === 'year') renderYearView();
 }
 document.querySelectorAll('.zoom-btn').forEach(btn => btn.addEventListener('click', () => switchView(btn.dataset.view)));
+
+// --- Horizontal Touch Swipe (Year <> Month <> Today) ---
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.addEventListener('touchstart', (e) => {
+  if (e.touches.length !== 1) return;
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+document.addEventListener('touchend', (e) => {
+  if (e.changedTouches.length !== 1) return;
+  // Ignore swipes when a drawer, modal, or Focus Sanctuary is open
+  if (
+    document.getElementById('dumpOverlay').classList.contains('open') ||
+    document.getElementById('eventModal').classList.contains('open') ||
+    document.getElementById('seasonModal').classList.contains('open') ||
+    document.getElementById('settingsModal').classList.contains('open') ||
+    document.getElementById('focusSanctuary').classList.contains('open')
+  ) return;
+
+  const deltaX = e.changedTouches[0].clientX - touchStartX;
+  const deltaY = e.changedTouches[0].clientY - touchStartY;
+
+  // Require intentional horizontal swipe (> 60px) and clearly horizontal vs vertical
+  if (Math.abs(deltaX) > 60 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+    const idx = VIEW_ORDER.indexOf(currentView);
+    if (deltaX < 0 && idx < VIEW_ORDER.length - 1) {
+      // Swipe Left -> Zoom In (Year -> Month -> Today)
+      switchView(VIEW_ORDER[idx + 1]);
+    } else if (deltaX > 0 && idx > 0) {
+      // Swipe Right -> Zoom Out (Today -> Month -> Year)
+      switchView(VIEW_ORDER[idx - 1]);
+    }
+  }
+}, { passive: true });
 
 function escapeHtml(str) {
   return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
