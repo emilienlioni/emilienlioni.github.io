@@ -2,112 +2,94 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebas
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
 import { getDatabase, ref, set, onValue, off } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js';
 
-const { firebaseConfig } = window.APP_CONFIG;
-const STORAGE_KEY = 'horizon_now_state_v3';
-const THEME_KEY = 'horizon_now_theme';
+const $ = (id) => document.getElementById(id);
+const STORAGE_KEY = 'hn_state';
+const DARK_KEY = 'hn_dark';
+const emptyState = () => ({ dailyTasks: {}, events: [], dump: [], seasons: [] });
 
-function toISO(date) {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-}
+const toISO = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const esc = (s) => String(s).replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
 
 const todayObj = new Date();
 const TODAY_ISO = toISO(todayObj);
 
-function normalizeState(raw) {
-  return {
-    dailyTasks: raw?.dailyTasks || {},
-    events: Array.isArray(raw?.events) ? raw.events : [],
-    dump: Array.isArray(raw?.dump) ? raw.dump : [],
-    seasons: Array.isArray(raw?.seasons) ? raw.seasons : []
-  };
-}
+const normalize = (raw) => ({
+  dailyTasks: raw?.dailyTasks || {},
+  events: Array.isArray(raw?.events) ? raw.events : [],
+  dump: Array.isArray(raw?.dump) ? raw.dump : [],
+  seasons: Array.isArray(raw?.seasons) ? raw.seasons : []
+});
 
 let state = (() => {
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (raw) return normalizeState(JSON.parse(raw));
-  } catch (e) {}
-  return { dailyTasks: {}, events: [], dump: [], seasons: [] };
+  try { return normalize(JSON.parse(localStorage.getItem(STORAGE_KEY))); } catch { return emptyState(); }
 })();
 
-// --- Theme Switcher ---
-const themeSelect = document.getElementById('themeSelect');
-function applyTheme(themeName) {
-  if (themeName === 'paper') document.documentElement.removeAttribute('data-theme');
-  else document.documentElement.setAttribute('data-theme', themeName);
-  if (themeSelect) themeSelect.value = themeName;
-  try { window.localStorage.setItem(THEME_KEY, themeName); } catch (e) {}
+// --- Light / Dark Mode ---
+const darkModeBtn = $('darkModeBtn');
+function syncDarkLabel() {
+  darkModeBtn.textContent = document.documentElement.classList.contains('dark') ? 'Switch to Light Mode' : 'Switch to Dark Mode';
 }
-applyTheme((() => { try { return window.localStorage.getItem(THEME_KEY) || 'paper'; } catch (e) { return 'paper'; } })());
-if (themeSelect) themeSelect.addEventListener('change', (e) => applyTheme(e.target.value));
+syncDarkLabel();
+darkModeBtn.onclick = () => {
+  const isDark = document.documentElement.classList.toggle('dark');
+  try { localStorage.setItem(DARK_KEY, isDark ? '1' : '0'); } catch {}
+  syncDarkLabel();
+};
 
-// --- Firebase Google Auth + Login Gate ---
-const app = initializeApp(firebaseConfig);
+// --- Firebase Auth + UID Sync ---
+const app = initializeApp(window.APP_CONFIG.firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
-
+const syncPill = $('syncPill');
 let dbRef = null;
-const authBtn = document.getElementById('authBtn');
-const loginBtn = document.getElementById('loginBtn');
-const signOutBtn = document.getElementById('signOutBtn');
 
-const signIn = () => signInWithPopup(auth, provider).catch((err) => alert(err.message));
+const setSync = (text, offline = false) => {
+  syncPill.textContent = text;
+  syncPill.classList.toggle('offline', offline);
+};
 
-loginBtn.addEventListener('click', signIn);
-authBtn.addEventListener('click', () => { if (!auth.currentUser) signIn(); });
-
-signOutBtn.addEventListener('click', () => {
-  window.localStorage.removeItem(STORAGE_KEY);
+$('loginBtn').onclick = () => signInWithPopup(auth, provider).catch((e) => alert(e.message));
+$('signOutBtn').onclick = () => {
+  localStorage.removeItem(STORAGE_KEY);
   signOut(auth);
-  document.getElementById('settingsModal').classList.remove('open');
-});
+  $('settingsModal').classList.remove('open');
+};
 
 onAuthStateChanged(auth, (user) => {
   if (dbRef) { off(dbRef); dbRef = null; }
   document.body.dataset.auth = user ? 'true' : 'false';
 
-  if (user) {
-    authBtn.textContent = '● Synced';
-    authBtn.classList.remove('offline');
-    signOutBtn.style.display = 'flex';
-    dbRef = ref(db, `users/${user.uid}`);
-
-    onValue(dbRef, (snapshot) => {
-      authBtn.textContent = '● Synced';
-      authBtn.classList.remove('offline');
-      if (snapshot.exists()) {
-        state = normalizeState(snapshot.val());
-        try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
-        updateDumpBadge();
-        switchView(currentView);
-      } else {
-        set(dbRef, state);
-      }
-    }, () => {
-      authBtn.textContent = 'Check Rules';
-      authBtn.classList.add('offline');
-    });
-  } else {
-    state = { dailyTasks: {}, events: [], dump: [], seasons: [] };
-    authBtn.textContent = 'Sign in';
-    authBtn.classList.add('offline');
-    signOutBtn.style.display = 'none';
+  if (!user) {
+    state = emptyState();
+    return;
   }
+
+  dbRef = ref(db, `users/${user.uid}`);
+  onValue(dbRef, (snap) => {
+    setSync('● Synced');
+    if (snap.exists()) {
+      state = normalize(snap.val());
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+      updateDumpBadge();
+      switchView(currentView);
+    } else {
+      set(dbRef, state);
+    }
+  }, () => setSync('Check Rules', true));
 });
 
 function saveState() {
-  try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
-  if (dbRef) {
-    authBtn.textContent = 'Syncing...';
-    set(dbRef, state)
-      .then(() => { authBtn.textContent = '● Synced'; authBtn.classList.remove('offline'); })
-      .catch(() => { authBtn.textContent = 'Check Rules'; authBtn.classList.add('offline'); });
-  }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+  if (!dbRef) return;
+  setSync('Syncing...');
+  set(dbRef, state)
+    .then(() => setSync('● Synced'))
+    .catch(() => setSync('Check Rules', true));
 }
 
-// --- Views & Swipe Navigation ---
-const VIEW_ORDER = ['year', 'month', 'day'];
+// --- Navigation & Swipe ---
+const VIEWS = ['year', 'month', 'day'];
 let currentView = 'day';
 let selectedDateISO = TODAY_ISO;
 let viewYear = todayObj.getFullYear();
@@ -115,64 +97,50 @@ let viewMonth = todayObj.getMonth();
 
 function switchView(view) {
   currentView = view;
-  document.querySelectorAll('.zoom-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
-  document.querySelectorAll('.view-section').forEach(sec => sec.classList.toggle('active', sec.id === `view-${view}`));
+  document.querySelectorAll('.zoom-btn').forEach((b) => b.classList.toggle('active', b.dataset.view === view));
+  document.querySelectorAll('.view-section').forEach((s) => s.classList.toggle('active', s.id === `view-${view}`));
   if (view === 'day') renderDayView();
   if (view === 'month') renderMonthView();
   if (view === 'year') renderYearView();
 }
-document.querySelectorAll('.zoom-btn').forEach(btn => btn.addEventListener('click', () => switchView(btn.dataset.view)));
+document.querySelectorAll('.zoom-btn').forEach((b) => (b.onclick = () => switchView(b.dataset.view)));
 
-let touchStartX = 0;
-let touchStartY = 0;
-
+let touchX = 0, touchY = 0;
 document.addEventListener('touchstart', (e) => {
-  if (e.touches.length !== 1) return;
-  touchStartX = e.touches[0].clientX;
-  touchStartY = e.touches[0].clientY;
+  if (e.touches.length === 1) { touchX = e.touches[0].clientX; touchY = e.touches[0].clientY; }
 }, { passive: true });
 
 document.addEventListener('touchend', (e) => {
   if (e.changedTouches.length !== 1 || document.body.dataset.auth !== 'true') return;
-  if (
-    document.getElementById('dumpOverlay').classList.contains('open') ||
-    document.getElementById('eventModal').classList.contains('open') ||
-    document.getElementById('seasonModal').classList.contains('open') ||
-    document.getElementById('settingsModal').classList.contains('open') ||
-    document.getElementById('focusSanctuary').classList.contains('open')
-  ) return;
+  if (document.querySelector('.overlay.open, .modal-center.open, .focus-sanctuary.open')) return;
 
-  const deltaX = e.changedTouches[0].clientX - touchStartX;
-  const deltaY = e.changedTouches[0].clientY - touchStartY;
-
-  if (Math.abs(deltaX) > 60 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
-    const idx = VIEW_ORDER.indexOf(currentView);
-    if (deltaX < 0 && idx < VIEW_ORDER.length - 1) switchView(VIEW_ORDER[idx + 1]);
-    else if (deltaX > 0 && idx > 0) switchView(VIEW_ORDER[idx - 1]);
+  const dx = e.changedTouches[0].clientX - touchX;
+  const dy = e.changedTouches[0].clientY - touchY;
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+    const idx = VIEWS.indexOf(currentView);
+    if (dx < 0 && idx < 2) switchView(VIEWS[idx + 1]);
+    if (dx > 0 && idx > 0) switchView(VIEWS[idx - 1]);
   }
 }, { passive: true });
 
-function escapeHtml(str) {
-  return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
-}
-
+// --- Day View ---
 function renderDayView() {
   const [y, m, d] = selectedDateISO.split('-').map(Number);
   const dateObj = new Date(y, m - 1, d);
   const isToday = selectedDateISO === TODAY_ISO;
 
-  document.getElementById('navDayBtn').textContent = isToday ? 'Today' : `${dateObj.toLocaleString('en-US', { month: 'short' })} ${d}`;
-  document.getElementById('selectedDateFull').textContent = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric' });
-  document.getElementById('backToTodayBtn').style.display = isToday ? 'none' : 'inline-flex';
+  $('navDayBtn').textContent = isToday ? 'Today' : `${dateObj.toLocaleString('en-US', { month: 'short' })} ${d}`;
+  $('selectedDateFull').textContent = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric' });
+  $('backToTodayBtn').style.display = isToday ? 'none' : 'inline-flex';
 
-  const activeSeasons = state.seasons.filter(s => m >= s.startMonth && m <= s.endMonth);
-  const pillsEl = document.getElementById('activeSeasonsPills');
-  pillsEl.style.display = activeSeasons.length ? 'flex' : 'none';
-  pillsEl.innerHTML = activeSeasons.map(s => `<span class="season-pill ${s.color === 'terra' ? 'terra' : ''}">${escapeHtml(s.title)}</span>`).join('');
+  const seasons = state.seasons.filter((s) => m >= s.startMonth && m <= s.endMonth);
+  const pills = $('activeSeasonsPills');
+  pills.style.display = seasons.length ? 'flex' : 'none';
+  pills.innerHTML = seasons.map((s) => `<span class="season-pill">${esc(s.title)}</span>`).join('');
 
   const tasks = state.dailyTasks[selectedDateISO] || [];
-  document.getElementById('daily3Count').textContent = tasks.length;
-  const listEl = document.getElementById('daily3List');
+  $('daily3Count').textContent = tasks.length;
+  const listEl = $('daily3List');
   listEl.innerHTML = '';
 
   tasks.forEach((task, idx) => {
@@ -180,249 +148,234 @@ function renderDayView() {
     div.className = `task-card ${task.done ? 'done' : ''}`;
     div.innerHTML = `
       <button class="task-check">${task.done ? '✓' : idx + 1}</button>
-      <div class="task-body"><div class="task-title">${escapeHtml(task.title)}</div></div>
+      <div class="task-body"><div class="task-title">${esc(task.title)}</div></div>
       <div class="task-actions">
         <button class="btn-focus-sm">Focus</button>
         <button class="btn-ghost-sm" title="Move to Dump">↩</button>
-      </div>
-    `;
-    div.querySelector('.task-check').addEventListener('click', () => { task.done = !task.done; saveState(); renderDayView(); });
-    div.querySelector('.btn-focus-sm').addEventListener('click', () => openFocus(task.title));
-    div.querySelector('.btn-ghost-sm').addEventListener('click', () => {
+      </div>`;
+    div.querySelector('.task-check').onclick = () => { task.done = !task.done; saveState(); renderDayView(); };
+    div.querySelector('.btn-focus-sm').onclick = () => openFocus(task.title);
+    div.querySelector('.btn-ghost-sm').onclick = () => {
       state.dump.unshift({ id: 'd' + Date.now(), text: task.title });
-      state.dailyTasks[selectedDateISO] = tasks.filter(t => t.id !== task.id);
+      state.dailyTasks[selectedDateISO] = tasks.filter((t) => t.id !== task.id);
       saveState(); updateDumpBadge(); renderDayView();
-    });
+    };
     listEl.appendChild(div);
   });
 
   if (tasks.length < 3) {
-    const slot = document.createElement('form');
-    slot.className = 'empty-slot';
-    slot.innerHTML = `<input type="text" placeholder="+ Priority #${tasks.length + 1}..." required /><button type="submit" class="btn-focus-sm">Add</button>`;
-    slot.addEventListener('submit', (e) => {
+    const form = document.createElement('form');
+    form.className = 'empty-slot';
+    form.innerHTML = `<input type="text" placeholder="+ Priority #${tasks.length + 1}..." required /><button type="submit" class="btn-focus-sm">Add</button>`;
+    form.onsubmit = (e) => {
       e.preventDefault();
-      const val = slot.querySelector('input').value.trim();
+      const val = form.querySelector('input').value.trim();
       if (!val) return;
-      if (!state.dailyTasks[selectedDateISO]) state.dailyTasks[selectedDateISO] = [];
-      state.dailyTasks[selectedDateISO].push({ id: 't' + Date.now(), title: val, done: false });
+      (state.dailyTasks[selectedDateISO] ||= []).push({ id: 't' + Date.now(), title: val, done: false });
       saveState(); renderDayView();
-    });
-    listEl.appendChild(slot);
+    };
+    listEl.appendChild(form);
   }
 
-  const dayEvents = state.events.filter(ev => ev.date === selectedDateISO);
-  const evContainer = document.getElementById('dayEventsContainer');
-  if (dayEvents.length === 0) {
-    evContainer.innerHTML = '<p class="section-sub">No events scheduled.</p>';
-  } else {
-    evContainer.innerHTML = dayEvents.map(ev => `
-      <div class="day-pill ${ev.type === 'milestone' ? 'milestone' : ''}" style="margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
-        <span>◆ ${escapeHtml(ev.title)}</span>
-        <button class="btn-ghost-sm" data-del-ev="${ev.id}">✕</button>
-      </div>
-    `).join('');
-    evContainer.querySelectorAll('[data-del-ev]').forEach(btn => btn.addEventListener('click', () => {
-      state.events = state.events.filter(e => e.id !== btn.dataset.delEv);
-      saveState(); renderDayView();
-    }));
-  }
+  const dayEvents = state.events.filter((ev) => ev.date === selectedDateISO);
+  const evBox = $('dayEventsContainer');
+  evBox.innerHTML = dayEvents.length
+    ? dayEvents.map((ev) => `
+        <div class="day-pill ${ev.type === 'milestone' ? 'milestone' : ''}" style="margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
+          <span>◆ ${esc(ev.title)}</span>
+          <button class="btn-ghost-sm" data-del-ev="${ev.id}">✕</button>
+        </div>`).join('')
+    : '<p class="section-sub">No events scheduled.</p>';
+
+  evBox.querySelectorAll('[data-del-ev]').forEach((b) => (b.onclick = () => {
+    state.events = state.events.filter((e) => e.id !== b.dataset.delEv);
+    saveState(); renderDayView();
+  }));
 }
+$('backToTodayBtn').onclick = () => { selectedDateISO = TODAY_ISO; renderDayView(); };
 
-document.getElementById('backToTodayBtn').addEventListener('click', () => { selectedDateISO = TODAY_ISO; renderDayView(); });
-
+// --- Month View ---
 function renderMonthView() {
-  const firstDay = new Date(viewYear, viewMonth, 1);
-  document.getElementById('monthViewTitle').textContent = firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-  const grid = document.getElementById('monthGrid');
+  const first = new Date(viewYear, viewMonth, 1);
+  $('monthViewTitle').textContent = first.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  const grid = $('monthGrid');
   grid.innerHTML = '';
 
-  let startWeekday = firstDay.getDay() - 1;
-  if (startWeekday < 0) startWeekday = 6;
+  const startOffset = (first.getDay() + 6) % 7;
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-  const prevMonthDays = new Date(viewYear, viewMonth, 0).getDate();
-  const totalCells = Math.ceil((startWeekday + daysInMonth) / 7) * 7;
+  const prevDays = new Date(viewYear, viewMonth, 0).getDate();
+  const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
 
   for (let i = 0; i < totalCells; i++) {
-    let cellDate, isOtherMonth = false;
-    if (i < startWeekday) { cellDate = new Date(viewYear, viewMonth - 1, prevMonthDays - startWeekday + i + 1); isOtherMonth = true; }
-    else if (i >= startWeekday + daysInMonth) { cellDate = new Date(viewYear, viewMonth + 1, i - (startWeekday + daysInMonth) + 1); isOtherMonth = true; }
-    else { cellDate = new Date(viewYear, viewMonth, i - startWeekday + 1); }
+    const isOther = i < startOffset || i >= startOffset + daysInMonth;
+    const cellDate = i < startOffset
+      ? new Date(viewYear, viewMonth - 1, prevDays - startOffset + i + 1)
+      : new Date(viewYear, viewMonth, i - startOffset + 1);
 
     const iso = toISO(cellDate);
     const isToday = iso === TODAY_ISO;
-    const dayTasks = state.dailyTasks[iso] || [];
-    const dayEvents = state.events.filter(e => e.date === iso);
+    const items = [
+      ...state.events.filter((e) => e.date === iso).map((e) => `<div class="day-pill ${e.type === 'milestone' ? 'milestone' : ''}">◆ ${esc(e.title)}</div>`),
+      ...(state.dailyTasks[iso] || []).map((t) => `<div class="day-pill daily3">${t.done ? '✓' : '•'} ${esc(t.title)}</div>`)
+    ].join('');
 
     const cell = document.createElement('div');
-    cell.className = `day-cell ${isOtherMonth ? 'other-month' : ''} ${isToday ? 'is-today' : ''}`;
-    const weekdayShort = cellDate.toLocaleDateString('en-US', { weekday: 'short' });
-
-    let itemsHtml = '';
-    dayEvents.forEach(ev => { itemsHtml += `<div class="day-pill ${ev.type === 'milestone' ? 'milestone' : ''}">◆ ${escapeHtml(ev.title)}</div>`; });
-    dayTasks.forEach(t => { itemsHtml += `<div class="day-pill daily3">${t.done ? '✓' : '•'} ${escapeHtml(t.title)}</div>`; });
-
+    cell.className = `day-cell ${isOther ? 'other-month' : ''} ${isToday ? 'is-today' : ''}`;
     cell.innerHTML = `
       <div class="day-cell-top">
         <div class="day-num-group">
           <span class="day-num">${cellDate.getDate()}</span>
-          <span class="day-weekday-mobile">${weekdayShort}</span>
+          <span class="day-weekday-mobile">${cellDate.toLocaleDateString('en-US', { weekday: 'short' })}</span>
           ${isToday ? '<span class="today-badge">Today</span>' : ''}
         </div>
       </div>
-      <div class="day-items">${itemsHtml}</div>
-    `;
-    cell.addEventListener('click', () => {
-      selectedDateISO = iso; viewYear = cellDate.getFullYear(); viewMonth = cellDate.getMonth(); switchView('day');
-    });
+      <div class="day-items">${items}</div>`;
+    cell.onclick = () => { selectedDateISO = iso; viewYear = cellDate.getFullYear(); viewMonth = cellDate.getMonth(); switchView('day'); };
     grid.appendChild(cell);
   }
 }
+$('prevMonthBtn').onclick = () => { if (--viewMonth < 0) { viewMonth = 11; viewYear--; } renderMonthView(); };
+$('nextMonthBtn').onclick = () => { if (++viewMonth > 11) { viewMonth = 0; viewYear++; } renderMonthView(); };
 
-document.getElementById('prevMonthBtn').addEventListener('click', () => { viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } renderMonthView(); });
-document.getElementById('nextMonthBtn').addEventListener('click', () => { viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } renderMonthView(); });
-
+// --- Year View ---
 function renderYearView() {
-  document.getElementById('yearViewTitle').textContent = viewYear;
-  const seasonsCard = document.getElementById('seasonsCard');
-  if (state.seasons.length === 0) {
-    seasonsCard.style.display = 'none';
-  } else {
-    seasonsCard.style.display = 'block';
-    document.getElementById('seasonsList').innerHTML = state.seasons.map(s => {
-      let segs = '';
-      for (let m = 1; m <= 12; m++) segs += `<div class="season-seg ${m >= s.startMonth && m <= s.endMonth ? 'active ' + s.color : ''}"></div>`;
-      return `<div class="season-bar-row"><div class="season-bar-label"><span>${escapeHtml(s.title)}</span><span style="color:var(--ink-muted);font-size:0.76rem;">M${s.startMonth}–M${s.endMonth}</span></div><div class="season-track">${segs}</div></div>`;
-    }).join('');
-  }
+  $('yearViewTitle').textContent = viewYear;
+  const sCard = $('seasonsCard');
+  sCard.style.display = state.seasons.length ? 'block' : 'none';
+  $('seasonsList').innerHTML = state.seasons.map((s) => {
+    const segs = Array.from({ length: 12 }, (_, m) => `<div class="season-seg ${m + 1 >= s.startMonth && m + 1 <= s.endMonth ? 'active' : ''}"></div>`).join('');
+    return `<div class="season-bar-row"><div class="season-bar-label"><span>${esc(s.title)}</span><span class="section-sub">M${s.startMonth}–M${s.endMonth}</span></div><div class="season-track">${segs}</div></div>`;
+  }).join('');
 
-  const yearGrid = document.getElementById('yearGrid');
+  const yearGrid = $('yearGrid');
   yearGrid.innerHTML = '';
   for (let m = 0; m < 12; m++) {
-    const mDate = new Date(viewYear, m, 1);
     const daysCount = new Date(viewYear, m + 1, 0).getDate();
-    let daysHtml = '';
-    for (let d = 1; d <= daysCount; d++) {
-      const iso = toISO(new Date(viewYear, m, d));
-      const hasItem = (state.dailyTasks[iso]?.length > 0) || state.events.some(e => e.date === iso);
-      daysHtml += `<div class="mini-day ${iso === TODAY_ISO ? 'is-today' : (hasItem ? 'has-event' : '')}">${d}</div>`;
-    }
+    const daysHtml = Array.from({ length: daysCount }, (_, i) => {
+      const iso = toISO(new Date(viewYear, m, i + 1));
+      const has = state.dailyTasks[iso]?.length || state.events.some((e) => e.date === iso);
+      return `<div class="mini-day ${iso === TODAY_ISO ? 'is-today' : has ? 'has-event' : ''}">${i + 1}</div>`;
+    }).join('');
+
     const card = document.createElement('div');
     card.className = 'mini-month';
-    card.innerHTML = `<div class="mini-month-head"><span>${mDate.toLocaleDateString('en-US', { month: 'long' })}</span></div><div class="mini-dots">${daysHtml}</div>`;
-    card.addEventListener('click', () => { viewMonth = m; switchView('month'); });
+    card.innerHTML = `<div class="mini-month-head"><span>${new Date(viewYear, m, 1).toLocaleDateString('en-US', { month: 'long' })}</span></div><div class="mini-dots">${daysHtml}</div>`;
+    card.onclick = () => { viewMonth = m; switchView('month'); };
     yearGrid.appendChild(card);
   }
 }
 
-function updateDumpBadge() { document.getElementById('dumpCount').textContent = state.dump.length; }
+// --- Dump & Modals ---
+const updateDumpBadge = () => { $('dumpCount').textContent = state.dump.length; };
+document.querySelectorAll('[data-close]').forEach((b) => (b.onclick = () => $(b.dataset.close).classList.remove('open')));
 
 function renderDumpList() {
-  const list = document.getElementById('dumpList');
-  if (state.dump.length === 0) { list.innerHTML = '<p class="section-sub">Empty.</p>'; return; }
-  list.innerHTML = state.dump.map(item => `
+  const list = $('dumpList');
+  if (!state.dump.length) { list.innerHTML = '<p class="section-sub">Empty.</p>'; return; }
+  list.innerHTML = state.dump.map((item) => `
     <div class="dump-item">
-      <div style="font-weight:500;">${escapeHtml(item.text)}</div>
+      <div style="font-weight:500;">${esc(item.text)}</div>
       <div class="dump-actions">
         <button class="btn-focus-sm" data-promote="${item.id}">→ Daily 3</button>
         <button class="btn-ghost-sm" data-del-dump="${item.id}">Delete</button>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 
-  list.querySelectorAll('[data-promote]').forEach(btn => btn.addEventListener('click', () => {
-    const currentTasks = state.dailyTasks[selectedDateISO] || [];
-    if (currentTasks.length >= 3) { alert('Daily 3 is full.'); return; }
-    const item = state.dump.find(d => d.id === btn.dataset.promote);
+  list.querySelectorAll('[data-promote]').forEach((b) => (b.onclick = () => {
+    const tasks = state.dailyTasks[selectedDateISO] || [];
+    if (tasks.length >= 3) return alert('Daily 3 is full.');
+    const item = state.dump.find((d) => d.id === b.dataset.promote);
     if (!item) return;
-    if (!state.dailyTasks[selectedDateISO]) state.dailyTasks[selectedDateISO] = [];
-    state.dailyTasks[selectedDateISO].push({ id: 't' + Date.now(), title: item.text, done: false });
-    state.dump = state.dump.filter(d => d.id !== item.id);
+    (state.dailyTasks[selectedDateISO] ||= []).push({ id: 't' + Date.now(), title: item.text, done: false });
+    state.dump = state.dump.filter((d) => d.id !== item.id);
     saveState(); updateDumpBadge(); renderDumpList();
     if (currentView === 'day') renderDayView();
   }));
 
-  list.querySelectorAll('[data-del-dump]').forEach(btn => btn.addEventListener('click', () => {
-    state.dump = state.dump.filter(d => d.id !== btn.dataset.delDump);
+  list.querySelectorAll('[data-del-dump]').forEach((b) => (b.onclick = () => {
+    state.dump = state.dump.filter((d) => d.id !== b.dataset.delDump);
     saveState(); updateDumpBadge(); renderDumpList();
   }));
 }
 
-document.getElementById('openDumpBtn').addEventListener('click', () => { renderDumpList(); document.getElementById('dumpOverlay').classList.add('open'); });
-document.getElementById('closeDumpBtn').addEventListener('click', () => document.getElementById('dumpOverlay').classList.remove('open'));
-document.getElementById('dumpForm').addEventListener('submit', (e) => {
+$('openDumpBtn').onclick = () => { renderDumpList(); $('dumpOverlay').classList.add('open'); };
+$('dumpForm').onsubmit = (e) => {
   e.preventDefault();
-  const input = document.getElementById('dumpInput');
-  if (!input.value.trim()) return;
-  state.dump.unshift({ id: 'd' + Date.now(), text: input.value.trim() });
-  input.value = '';
+  const val = $('dumpInput').value.trim();
+  if (!val) return;
+  state.dump.unshift({ id: 'd' + Date.now(), text: val });
+  $('dumpInput').value = '';
   saveState(); updateDumpBadge(); renderDumpList();
-});
+};
 
-function openEventModal() { document.getElementById('eventDateInput').value = selectedDateISO; document.getElementById('eventModal').classList.add('open'); }
-document.getElementById('addEventBtn').addEventListener('click', openEventModal);
-document.getElementById('monthAddEventBtn').addEventListener('click', openEventModal);
-document.getElementById('closeEventModal').addEventListener('click', () => document.getElementById('eventModal').classList.remove('open'));
-document.getElementById('eventForm').addEventListener('submit', (e) => {
+const openEventModal = () => { $('eventDateInput').value = selectedDateISO; $('eventModal').classList.add('open'); };
+$('addEventBtn').onclick = $('monthAddEventBtn').onclick = openEventModal;
+$('eventForm').onsubmit = (e) => {
   e.preventDefault();
-  state.events.push({ id: 'e' + Date.now(), title: document.getElementById('eventTitleInput').value.trim(), date: document.getElementById('eventDateInput').value, type: document.getElementById('eventTypeInput').value });
-  document.getElementById('eventTitleInput').value = '';
-  document.getElementById('eventModal').classList.remove('open');
+  state.events.push({ id: 'e' + Date.now(), title: $('eventTitleInput').value.trim(), date: $('eventDateInput').value, type: $('eventTypeInput').value });
+  $('eventTitleInput').value = '';
+  $('eventModal').classList.remove('open');
   saveState(); switchView(currentView);
-});
+};
 
-document.getElementById('addSeasonBtn').addEventListener('click', () => document.getElementById('seasonModal').classList.add('open'));
-document.getElementById('closeSeasonModal').addEventListener('click', () => document.getElementById('seasonModal').classList.remove('open'));
-document.getElementById('seasonForm').addEventListener('submit', (e) => {
+$('addSeasonBtn').onclick = () => $('seasonModal').classList.add('open');
+$('seasonForm').onsubmit = (e) => {
   e.preventDefault();
-  state.seasons.push({ id: 's' + Date.now(), title: document.getElementById('seasonTitleInput').value.trim(), startMonth: Number(document.getElementById('seasonStartInput').value), endMonth: Number(document.getElementById('seasonEndInput').value), color: 'sage' });
-  document.getElementById('seasonTitleInput').value = '';
-  document.getElementById('seasonModal').classList.remove('open');
+  state.seasons.push({ id: 's' + Date.now(), title: $('seasonTitleInput').value.trim(), startMonth: +$('seasonStartInput').value, endMonth: +$('seasonEndInput').value });
+  $('seasonForm').reset();
+  $('seasonModal').classList.remove('open');
   saveState(); renderYearView();
-});
+};
 
-document.getElementById('openSettingsBtn').addEventListener('click', () => document.getElementById('settingsModal').classList.add('open'));
-document.getElementById('closeSettingsModal').addEventListener('click', () => document.getElementById('settingsModal').classList.remove('open'));
-document.getElementById('exportJsonBtn').addEventListener('click', () => {
-  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `horizon-now-${TODAY_ISO}.json`; a.click();
-});
-document.getElementById('importJsonInput').addEventListener('change', (e) => {
-  const file = e.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    try { state = normalizeState(JSON.parse(ev.target.result)); saveState(); updateDumpBadge(); switchView(currentView); document.getElementById('settingsModal').classList.remove('open'); }
-    catch (err) { alert('Invalid JSON'); }
+$('openSettingsBtn').onclick = () => $('settingsModal').classList.add('open');
+$('exportJsonBtn').onclick = () => {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }));
+  a.download = `horizon-now-${TODAY_ISO}.json`;
+  a.click();
+};
+$('importJsonInput').onchange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = (ev) => {
+    try {
+      state = normalize(JSON.parse(ev.target.result));
+      saveState(); updateDumpBadge(); switchView(currentView);
+      $('settingsModal').classList.remove('open');
+    } catch { alert('Invalid JSON'); }
   };
-  reader.readAsText(file);
-});
-document.getElementById('clearSampleBtn').addEventListener('click', () => {
-  state = { dailyTasks: {}, events: [], dump: [], seasons: [] };
-  saveState(); updateDumpBadge(); switchView(currentView); document.getElementById('settingsModal').classList.remove('open');
-});
+  r.readAsText(file);
+};
+$('clearSampleBtn').onclick = () => {
+  state = emptyState();
+  saveState(); updateDumpBadge(); switchView(currentView);
+  $('settingsModal').classList.remove('open');
+};
 
-let timerSeconds = 25 * 60, timerInterval = null, timerRunning = false;
-function updateTimerUI() {
-  document.getElementById('timerDisplay').textContent = `${String(Math.floor(timerSeconds / 60)).padStart(2, '0')}:${String(timerSeconds % 60).padStart(2, '0')}`;
-}
-function openFocus(taskTitle) {
-  const tasks = state.dailyTasks[selectedDateISO] || [];
-  document.getElementById('focusTaskTitle').textContent = taskTitle || tasks.find(t => !t.done)?.title || 'Focus';
-  timerSeconds = 25 * 60; updateTimerUI(); document.getElementById('focusSanctuary').classList.add('open'); startTimer();
-}
+// --- Focus Sanctuary ---
+let timerSec = 1500, timerId = null;
+const updateTimer = () => { $('timerDisplay').textContent = `${String(Math.floor(timerSec / 60)).padStart(2, '0')}:${String(timerSec % 60).padStart(2, '0')}`; };
 function startTimer() {
-  clearInterval(timerInterval); timerRunning = true; document.getElementById('toggleTimerBtn').textContent = 'Pause';
-  timerInterval = setInterval(() => { if (timerSeconds > 0) { timerSeconds--; updateTimerUI(); } else { clearInterval(timerInterval); timerRunning = false; } }, 1000);
+  clearInterval(timerId);
+  $('toggleTimerBtn').textContent = 'Pause';
+  timerId = setInterval(() => (timerSec > 0 ? (--timerSec, updateTimer()) : clearInterval(timerId)), 1000);
 }
-document.getElementById('toggleTimerBtn').addEventListener('click', () => {
-  if (timerRunning) { clearInterval(timerInterval); timerRunning = false; document.getElementById('toggleTimerBtn').textContent = 'Resume'; }
+function openFocus(title) {
+  $('focusTaskTitle').textContent = title || 'Focus';
+  timerSec = 1500; updateTimer();
+  $('focusSanctuary').classList.add('open');
+  startTimer();
+}
+$('toggleTimerBtn').onclick = () => {
+  if (timerId) { clearInterval(timerId); timerId = null; $('toggleTimerBtn').textContent = 'Resume'; }
   else startTimer();
-});
-document.getElementById('focusDumpBtn').addEventListener('click', () => {
-  const thought = prompt('Capture thought:');
-  if (thought && thought.trim()) { state.dump.unshift({ id: 'd' + Date.now(), text: thought.trim() }); saveState(); updateDumpBadge(); }
-});
-document.getElementById('exitFocusBtn').addEventListener('click', () => { clearInterval(timerInterval); timerRunning = false; document.getElementById('focusSanctuary').classList.remove('open'); });
+};
+$('focusDumpBtn').onclick = () => {
+  const t = prompt('Capture thought:');
+  if (t?.trim()) { state.dump.unshift({ id: 'd' + Date.now(), text: t.trim() }); saveState(); updateDumpBadge(); }
+};
+$('exitFocusBtn').onclick = () => { clearInterval(timerId); timerId = null; $('focusSanctuary').classList.remove('open'); };
 
 updateDumpBadge();
 renderDayView();
