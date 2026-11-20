@@ -41,7 +41,7 @@ function applyTheme(themeName) {
 applyTheme((() => { try { return window.localStorage.getItem(THEME_KEY) || 'paper'; } catch (e) { return 'paper'; } })());
 if (themeSelect) themeSelect.addEventListener('change', (e) => applyTheme(e.target.value));
 
-// --- Firebase Google Auth + Private UID Sync ---
+// --- Firebase Google Auth + Login Gate ---
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
@@ -49,19 +49,23 @@ const provider = new GoogleAuthProvider();
 
 let dbRef = null;
 const authBtn = document.getElementById('authBtn');
+const loginBtn = document.getElementById('loginBtn');
 const signOutBtn = document.getElementById('signOutBtn');
 
-authBtn.addEventListener('click', () => {
-  if (!auth.currentUser) signInWithPopup(auth, provider).catch((err) => alert(err.message));
-});
+const signIn = () => signInWithPopup(auth, provider).catch((err) => alert(err.message));
+
+loginBtn.addEventListener('click', signIn);
+authBtn.addEventListener('click', () => { if (!auth.currentUser) signIn(); });
 
 signOutBtn.addEventListener('click', () => {
+  window.localStorage.removeItem(STORAGE_KEY);
   signOut(auth);
   document.getElementById('settingsModal').classList.remove('open');
 });
 
 onAuthStateChanged(auth, (user) => {
   if (dbRef) { off(dbRef); dbRef = null; }
+  document.body.dataset.auth = user ? 'true' : 'false';
 
   if (user) {
     authBtn.textContent = '● Synced';
@@ -85,6 +89,7 @@ onAuthStateChanged(auth, (user) => {
       authBtn.classList.add('offline');
     });
   } else {
+    state = { dailyTasks: {}, events: [], dump: [], seasons: [] };
     authBtn.textContent = 'Sign in';
     authBtn.classList.add('offline');
     signOutBtn.style.display = 'none';
@@ -128,7 +133,7 @@ document.addEventListener('touchstart', (e) => {
 }, { passive: true });
 
 document.addEventListener('touchend', (e) => {
-  if (e.changedTouches.length !== 1) return;
+  if (e.changedTouches.length !== 1 || document.body.dataset.auth !== 'true') return;
   if (
     document.getElementById('dumpOverlay').classList.contains('open') ||
     document.getElementById('eventModal').classList.contains('open') ||

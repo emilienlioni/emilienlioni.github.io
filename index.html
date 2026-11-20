@@ -17,81 +17,87 @@
 </head>
 <body>
 
-  <header class="topbar">
-    <div class="topbar-inner">
-      <button id="authBtn" class="sync-pill offline">Sign in</button>
+  <div id="loginScreen">
+    <button id="loginBtn" class="btn-primary">Sign in with Google</button>
+  </div>
 
-      <nav class="zoom-switcher" aria-label="Time horizon">
-        <button class="zoom-btn" data-view="year">Year</button>
-        <button class="zoom-btn" data-view="month">Month</button>
-        <button class="zoom-btn active" data-view="day" id="navDayBtn">Today</button>
-      </nav>
+  <div id="appShell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <button id="authBtn" class="sync-pill offline">Sign in</button>
 
-      <div class="topbar-actions">
-        <button class="btn-dump" id="openDumpBtn">
-          <span>Dump</span>
-          <span class="badge" id="dumpCount">0</span>
-        </button>
-        <button class="btn-icon" id="openSettingsBtn" aria-label="Settings">⚙</button>
-      </div>
-    </div>
-  </header>
+        <nav class="zoom-switcher" aria-label="Time horizon">
+          <button class="zoom-btn" data-view="year">Year</button>
+          <button class="zoom-btn" data-view="month">Month</button>
+          <button class="zoom-btn active" data-view="day" id="navDayBtn">Today</button>
+        </nav>
 
-  <main class="container">
-    <section id="view-day" class="view-section active">
-      <div class="micro-header">
-        <div class="date-row">
-          <h1 class="micro-title" id="selectedDateFull"></h1>
-          <button class="btn-secondary" id="backToTodayBtn" style="display:none;">← Today</button>
+        <div class="topbar-actions">
+          <button class="btn-dump" id="openDumpBtn">
+            <span>Dump</span>
+            <span class="badge" id="dumpCount">0</span>
+          </button>
+          <button class="btn-icon" id="openSettingsBtn" aria-label="Settings">⚙</button>
         </div>
-        <div class="season-pills" id="activeSeasonsPills"></div>
       </div>
+    </header>
 
-      <div class="micro-grid">
-        <div class="card">
-          <div class="section-head">
-            <h2>Daily 3</h2>
-            <span class="slot-counter"><span id="daily3Count">0</span>/3</span>
+    <main class="container">
+      <section id="view-day" class="view-section active">
+        <div class="micro-header">
+          <div class="date-row">
+            <h1 class="micro-title" id="selectedDateFull"></h1>
+            <button class="btn-secondary" id="backToTodayBtn" style="display:none;">← Today</button>
           </div>
-          <div class="task-list" id="daily3List"></div>
+          <div class="season-pills" id="activeSeasonsPills"></div>
         </div>
 
-        <div class="card">
-          <div class="section-head">
-            <h2>Events</h2>
-            <button class="btn-secondary" id="addEventBtn" style="padding:5px 11px;font-size:0.78rem;">+ Add</button>
+        <div class="micro-grid">
+          <div class="card">
+            <div class="section-head">
+              <h2>Daily 3</h2>
+              <span class="slot-counter"><span id="daily3Count">0</span>/3</span>
+            </div>
+            <div class="task-list" id="daily3List"></div>
           </div>
-          <div id="dayEventsContainer"></div>
-        </div>
-      </div>
-    </section>
 
-    <section id="view-month" class="view-section">
-      <div class="month-header">
-        <div class="month-nav">
-          <button class="btn-icon" id="prevMonthBtn" aria-label="Previous month">←</button>
-          <h1 class="month-title" id="monthViewTitle"></h1>
-          <button class="btn-icon" id="nextMonthBtn" aria-label="Next month">→</button>
+          <div class="card">
+            <div class="section-head">
+              <h2>Events</h2>
+              <button class="btn-secondary" id="addEventBtn" style="padding:5px 11px;font-size:0.78rem;">+ Add</button>
+            </div>
+            <div id="dayEventsContainer"></div>
+          </div>
         </div>
-        <button class="btn-secondary" id="monthAddEventBtn">+ Event</button>
-      </div>
-      <div class="weekdays-row">
-        <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
-      </div>
-      <div class="month-grid" id="monthGrid"></div>
-    </section>
+      </section>
 
-    <section id="view-year" class="view-section">
-      <div class="month-header">
-        <h1 class="month-title" id="yearViewTitle"></h1>
-        <button class="btn-secondary" id="addSeasonBtn">+ Season</button>
-      </div>
-      <div class="card seasons-card" id="seasonsCard">
-        <div id="seasonsList"></div>
-      </div>
-      <div class="year-grid" id="yearGrid"></div>
-    </section>
-  </main>
+      <section id="view-month" class="view-section">
+        <div class="month-header">
+          <div class="month-nav">
+            <button class="btn-icon" id="prevMonthBtn" aria-label="Previous month">←</button>
+            <h1 class="month-title" id="monthViewTitle"></h1>
+            <button class="btn-icon" id="nextMonthBtn" aria-label="Next month">→</button>
+          </div>
+          <button class="btn-secondary" id="monthAddEventBtn">+ Event</button>
+        </div>
+        <div class="weekdays-row">
+          <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+        </div>
+        <div class="month-grid" id="monthGrid"></div>
+      </section>
+
+      <section id="view-year" class="view-section">
+        <div class="month-header">
+          <h1 class="month-title" id="yearViewTitle"></h1>
+          <button class="btn-secondary" id="addSeasonBtn">+ Season</button>
+        </div>
+        <div class="card seasons-card" id="seasonsCard">
+          <div id="seasonsList"></div>
+        </div>
+        <div class="year-grid" id="yearGrid"></div>
+      </section>
+    </main>
+  </div>
 
   <div class="overlay" id="dumpOverlay">
     <div class="drawer">

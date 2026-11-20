@@ -59,6 +59,11 @@ body {
   touch-action: pan-y;
 }
 
+#appShell { display: none; }
+body[data-auth="true"] #appShell { display: block; }
+body[data-auth="true"] #loginScreen { display: none; }
+#loginScreen { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+
 h1, h2, .serif { font-family: 'Fraunces', Georgia, serif; font-weight: 500; letter-spacing: -0.02em; }
 
 .topbar {
