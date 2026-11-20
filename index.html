@@ -28,12 +28,7 @@
       --shadow-md: 0 10px 30px rgba(31, 36, 33, 0.08);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -44,32 +39,11 @@
       overflow-x: hidden;
     }
 
-    h1, h2, h3, .serif {
-      font-family: 'Fraunces', Georgia, serif;
-      font-weight: 500;
-      letter-spacing: -0.02em;
-    }
+    h1, h2, h3, .serif { font-family: 'Fraunces', Georgia, serif; font-weight: 500; letter-spacing: -0.02em; }
 
-    /* Sandbox Warning Banner */
-    .storage-banner {
-      display: none;
-      background: var(--terracotta-soft);
-      color: #7A3520;
-      border-bottom: 1px solid #EBC5B8;
-      padding: 10px 16px;
-      font-size: 0.82rem;
-      line-height: 1.4;
-      text-align: center;
-    }
-    .storage-banner.visible {
-      display: block;
-    }
-
-    /* Top Navigation — Mobile-First Responsive */
+    /* Top Navigation */
     .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 30;
+      position: sticky; top: 0; z-index: 30;
       background: rgba(246, 244, 239, 0.92);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
@@ -77,840 +51,208 @@
     }
 
     .topbar-inner {
-      max-width: 1120px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
+      max-width: 1120px; margin: 0 auto;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
     .brand-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: var(--sage);
-      color: #fff;
-      display: grid;
-      place-items: center;
-      flex-shrink: 0;
-      font-size: 16px;
+      width: 34px; height: 34px; border-radius: 50%; background: var(--sage); color: #fff;
+      display: grid; place-items: center; flex-shrink: 0; font-size: 16px;
     }
+    .brand-title { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 500; white-space: nowrap; }
 
-    .brand-title {
-      font-family: 'Fraunces', serif;
-      font-size: 1.15rem;
-      font-weight: 500;
-      color: var(--ink);
-      white-space: nowrap;
+    .sync-pill {
+      font-size: 0.72rem; font-weight: 600; padding: 3px 9px; border-radius: var(--radius-pill);
+      background: var(--sage-soft); color: var(--sage); display: inline-flex; align-items: center; gap: 5px;
     }
+    .sync-pill.offline { background: var(--ochre-soft); color: #6E4E1B; }
 
     .zoom-switcher {
-      display: inline-flex;
-      background: var(--surface-muted);
-      padding: 4px;
-      border-radius: var(--radius-pill);
-      border: 1px solid var(--border);
-      order: 3;
-      width: 100%;
-      justify-content: space-between;
+      display: inline-flex; background: var(--surface-muted); padding: 4px;
+      border-radius: var(--radius-pill); border: 1px solid var(--border);
+      order: 3; width: 100%; justify-content: space-between;
     }
-
     .zoom-btn {
-      flex: 1;
-      border: none;
-      background: transparent;
-      padding: 8px 14px;
-      border-radius: var(--radius-pill);
-      font-family: inherit;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--ink-muted);
-      cursor: pointer;
-      transition: all 0.2s ease;
+      flex: 1; border: none; background: transparent; padding: 8px 14px;
+      border-radius: var(--radius-pill); font-family: inherit; font-size: 0.85rem;
+      font-weight: 600; color: var(--ink-muted); cursor: pointer; transition: all 0.2s ease;
     }
+    .zoom-btn.active { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-sm); }
 
-    .zoom-btn.active {
-      background: var(--surface);
-      color: var(--ink);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .topbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-    }
-
+    .topbar-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
     .btn-dump {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--ink);
-      color: #fff;
-      border: none;
-      padding: 9px 14px;
-      border-radius: var(--radius-pill);
-      font-family: inherit;
-      font-size: 0.84rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      box-shadow: var(--shadow-sm);
+      display: inline-flex; align-items: center; gap: 6px; background: var(--ink); color: #fff;
+      border: none; padding: 9px 14px; border-radius: var(--radius-pill); font-family: inherit;
+      font-size: 0.84rem; font-weight: 600; cursor: pointer; white-space: nowrap; box-shadow: var(--shadow-sm);
     }
-
     .btn-dump .badge {
-      background: var(--terracotta);
-      color: #fff;
-      font-size: 0.72rem;
-      padding: 1px 6px;
-      border-radius: var(--radius-pill);
+      background: var(--terracotta); color: #fff; font-size: 0.72rem; padding: 1px 6px; border-radius: var(--radius-pill);
     }
-
     .btn-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--ink);
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      flex-shrink: 0;
+      width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border);
+      background: var(--surface); color: var(--ink); display: grid; place-items: center; cursor: pointer; flex-shrink: 0;
     }
 
     @media (min-width: 768px) {
-      .topbar {
-        padding: 14px 28px;
-      }
-      .zoom-switcher {
-        order: 0;
-        width: auto;
-      }
-      .zoom-btn {
-        flex: initial;
-        padding: 8px 20px;
-      }
-      .brand-title {
-        font-size: 1.3rem;
-      }
+      .topbar { padding: 14px 28px; }
+      .zoom-switcher { order: 0; width: auto; }
+      .zoom-btn { flex: initial; padding: 8px 20px; }
+      .brand-title { font-size: 1.3rem; }
     }
 
-    /* Main Container */
-    .container {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 20px 16px 80px;
-    }
+    .container { max-width: 1120px; margin: 0 auto; padding: 20px 16px 80px; }
+    @media (min-width: 768px) { .container { padding: 32px 28px 96px; } }
 
-    @media (min-width: 768px) {
-      .container {
-        padding: 32px 28px 96px;
-      }
-    }
+    .view-section { display: none; animation: fadeIn 0.25s ease; }
+    .view-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-    .view-section {
-      display: none;
-      animation: fadeIn 0.25s ease;
-    }
-
-    .view-section.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Micro / Day Cockpit */
-    .micro-header {
-      margin-bottom: 24px;
-    }
-
+    .micro-header { margin-bottom: 24px; }
     .eyebrow {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--ink-muted);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--ink-muted); display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px;
     }
-
-    .micro-title {
-      font-size: clamp(1.85rem, 5vw, 2.75rem);
-      line-height: 1.15;
-      margin-bottom: 14px;
-    }
-
-    .season-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 18px;
-      align-items: center;
-    }
-
-    .season-pill {
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 6px 12px;
-      border-radius: var(--radius-pill);
-      background: var(--sage-soft);
-      color: var(--sage);
-    }
-
-    .season-pill.terra {
-      background: var(--terracotta-soft);
-      color: #8F4229;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
+    .micro-title { font-size: clamp(1.85rem, 5vw, 2.75rem); line-height: 1.15; margin-bottom: 14px; }
+    .season-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; align-items: center; }
+    .season-pill { font-size: 0.8rem; font-weight: 600; padding: 6px 12px; border-radius: var(--radius-pill); background: var(--sage-soft); color: var(--sage); }
+    .season-pill.terra { background: var(--terracotta-soft); color: #8F4229; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 
     .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--sage);
-      color: #fff;
-      border: none;
-      padding: 12px 20px;
-      border-radius: var(--radius-pill);
-      font-family: inherit;
-      font-size: 0.92rem;
-      font-weight: 600;
-      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px; background: var(--sage); color: #fff;
+      border: none; padding: 12px 20px; border-radius: var(--radius-pill); font-family: inherit;
+      font-size: 0.92rem; font-weight: 600; cursor: pointer;
     }
-
     .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--surface);
-      color: var(--ink);
-      border: 1px solid var(--border);
-      padding: 10px 16px;
-      border-radius: var(--radius-pill);
-      font-family: inherit;
-      font-size: 0.86rem;
-      font-weight: 600;
-      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px; background: var(--surface); color: var(--ink);
+      border: 1px solid var(--border); padding: 10px 16px; border-radius: var(--radius-pill);
+      font-family: inherit; font-size: 0.86rem; font-weight: 600; cursor: pointer;
     }
 
     .micro-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 24px;
-      margin-top: 24px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);
     }
+    @media (min-width: 860px) { .micro-grid { grid-template-columns: 1.35fr 1fr; gap: 32px; } }
 
-    @media (min-width: 860px) {
-      .micro-grid {
-        grid-template-columns: 1.35fr 1fr;
-        gap: 32px;
-      }
-    }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow-sm); }
+    @media (min-width: 768px) { .card { padding: 24px; } }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 18px;
-      box-shadow: var(--shadow-sm);
-    }
+    .section-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .section-head h2 { font-size: 1.5rem; }
+    .section-sub { font-size: 0.86rem; color: var(--ink-muted); margin-top: 2px; }
+    .slot-counter { background: var(--surface-muted); padding: 6px 12px; border-radius: var(--radius-md); font-size: 0.78rem; font-weight: 600; color: var(--ink-muted); text-align: center; flex-shrink: 0; }
 
-    @media (min-width: 768px) {
-      .card {
-        padding: 24px;
-      }
-    }
-
-    .section-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .section-head h2 {
-      font-size: 1.5rem;
-    }
-
-    .section-sub {
-      font-size: 0.86rem;
-      color: var(--ink-muted);
-      margin-top: 2px;
-    }
-
-    .slot-counter {
-      background: var(--surface-muted);
-      padding: 6px 12px;
-      border-radius: var(--radius-md);
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--ink-muted);
-      text-align: center;
-      flex-shrink: 0;
-    }
-
-    /* Daily 3 Task Items */
-    .task-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
+    .task-list { display: flex; flex-direction: column; gap: 12px; }
     .task-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 14px;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      transition: all 0.2s ease;
+      background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 14px; display: flex; align-items: flex-start; gap: 12px; transition: all 0.2s ease;
     }
-
-    .task-card.done {
-      opacity: 0.6;
-    }
-
-    .task-card.done .task-title {
-      text-decoration: line-through;
-    }
-
+    .task-card.done { opacity: 0.6; }
+    .task-card.done .task-title { text-decoration: line-through; }
     .task-check {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      border: 2px solid var(--sage);
-      background: var(--surface);
-      color: var(--sage);
-      font-size: 0.78rem;
-      font-weight: 700;
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      flex-shrink: 0;
-      margin-top: 2px;
+      width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--sage); background: var(--surface);
+      color: var(--sage); font-size: 0.78rem; font-weight: 700; display: grid; place-items: center;
+      cursor: pointer; flex-shrink: 0; margin-top: 2px;
     }
+    .task-card.done .task-check { background: var(--sage); color: #fff; }
+    .task-body { flex: 1; min-width: 0; }
+    .task-title { font-weight: 600; font-size: 0.98rem; margin-bottom: 4px; word-break: break-word; }
+    .task-meta { font-size: 0.8rem; color: var(--ink-muted); display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .task-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 
-    .task-card.done .task-check {
-      background: var(--sage);
-      color: #fff;
-    }
+    .btn-focus-sm { background: var(--sage-soft); color: var(--sage); border: none; padding: 6px 10px; border-radius: var(--radius-pill); font-size: 0.78rem; font-weight: 600; cursor: pointer; }
+    .btn-ghost-sm { background: transparent; border: none; color: var(--ink-muted); font-size: 0.85rem; padding: 4px 6px; cursor: pointer; }
 
-    .task-body {
-      flex: 1;
-      min-width: 0;
-    }
+    .empty-slot { border: 1.5px dashed var(--border); border-radius: var(--radius-md); padding: 14px; display: flex; gap: 8px; }
+    .empty-slot input { flex: 1; border: none; background: transparent; font-family: inherit; font-size: 0.92rem; color: var(--ink); outline: none; min-width: 0; }
 
-    .task-title {
-      font-weight: 600;
-      font-size: 0.98rem;
-      margin-bottom: 4px;
-      word-break: break-word;
-    }
-
-    .task-meta {
-      font-size: 0.8rem;
-      color: var(--ink-muted);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .task-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    .btn-focus-sm {
-      background: var(--sage-soft);
-      color: var(--sage);
-      border: none;
-      padding: 6px 10px;
-      border-radius: var(--radius-pill);
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .btn-ghost-sm {
-      background: transparent;
-      border: none;
-      color: var(--ink-muted);
-      font-size: 0.85rem;
-      padding: 4px 6px;
-      cursor: pointer;
-    }
-
-    .empty-slot {
-      border: 1.5px dashed var(--border);
-      border-radius: var(--radius-md);
-      padding: 14px;
-      display: flex;
-      gap: 8px;
-    }
-
-    .empty-slot input {
-      flex: 1;
-      border: none;
-      background: transparent;
-      font-family: inherit;
-      font-size: 0.92rem;
-      color: var(--ink);
-      outline: none;
-      min-width: 0;
-    }
-
-    /* Energy Rhythm & Day Events */
-    .rhythm-block {
-      padding: 12px 14px;
-      border-radius: var(--radius-md);
-      background: var(--bg);
-      border-left: 4px solid var(--sage);
-      margin-bottom: 10px;
-    }
-
+    .rhythm-block { padding: 12px 14px; border-radius: var(--radius-md); background: var(--bg); border-left: 4px solid var(--sage); margin-bottom: 10px; }
     .rhythm-block.afternoon { border-left-color: var(--ochre); }
     .rhythm-block.evening { border-left-color: var(--terracotta); }
+    .rhythm-time { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); }
+    .rhythm-name { font-weight: 600; font-size: 0.95rem; margin: 2px 0; }
 
-    .rhythm-time {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--ink-muted);
-    }
+    .month-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+    .month-nav { display: flex; align-items: center; gap: 10px; }
+    .month-title { font-size: clamp(1.5rem, 4vw, 2.1rem); }
+    .month-hint { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 14px; }
+    .weekdays-row { display: none; }
 
-    .rhythm-name {
-      font-weight: 600;
-      font-size: 0.95rem;
-      margin: 2px 0;
-    }
-
-    /* Meso (Month View) — Mobile-First Readable Layout */
-    .month-header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .month-nav {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .month-title {
-      font-size: clamp(1.5rem, 4vw, 2.1rem);
-    }
-
-    .month-hint {
-      font-size: 0.85rem;
-      color: var(--ink-muted);
-      margin-bottom: 14px;
-    }
-
-    .weekdays-row {
-      display: none;
-    }
-
-    /* On Mobile: Spacious Agenda/Grid Hybrid so every day's tasks are 100% readable */
-    .month-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-
+    .month-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
     .day-cell {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 12px 14px;
-      cursor: pointer;
-      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      text-align: left;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 12px 14px; cursor: pointer; display: flex; flex-direction: column; gap: 8px; text-align: left;
     }
+    .day-cell:hover, .day-cell:active { border-color: var(--sage); box-shadow: var(--shadow-sm); }
+    .day-cell.is-today { border: 2px solid var(--sage); background: #F9FBF9; }
+    .day-cell.other-month { display: none; }
+    .day-cell-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .day-num-group { display: flex; align-items: center; gap: 8px; }
+    .day-num { font-weight: 700; font-size: 0.95rem; }
+    .day-weekday-mobile { font-size: 0.78rem; font-weight: 600; color: var(--ink-muted); text-transform: uppercase; }
+    .today-badge { font-size: 0.7rem; font-weight: 700; background: var(--sage); color: #fff; padding: 2px 8px; border-radius: var(--radius-pill); }
+    .day-open-cue { font-size: 0.76rem; color: var(--ink-muted); font-weight: 500; }
+    .day-items { display: flex; flex-direction: column; gap: 5px; }
+    .day-pill { font-size: 0.8rem; padding: 5px 9px; border-radius: 8px; background: var(--sage-soft); color: var(--ink); font-weight: 500; line-height: 1.3; word-break: break-word; }
+    .day-pill.milestone { background: var(--terracotta-soft); color: #7A3520; }
+    .day-pill.daily3 { background: var(--ochre-soft); color: #6E4E1B; }
 
-    .day-cell:hover, .day-cell:active {
-      border-color: var(--sage);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .day-cell.is-today {
-      border: 2px solid var(--sage);
-      background: #F9FBF9;
-    }
-
-    .day-cell.other-month {
-      display: none;
-    }
-
-    .day-cell-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .day-num-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .day-num {
-      font-weight: 700;
-      font-size: 0.95rem;
-    }
-
-    .day-weekday-mobile {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--ink-muted);
-      text-transform: uppercase;
-    }
-
-    .today-badge {
-      font-size: 0.7rem;
-      font-weight: 700;
-      background: var(--sage);
-      color: #fff;
-      padding: 2px 8px;
-      border-radius: var(--radius-pill);
-    }
-
-    .day-open-cue {
-      font-size: 0.76rem;
-      color: var(--ink-muted);
-      font-weight: 500;
-    }
-
-    .day-items {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .day-pill {
-      font-size: 0.8rem;
-      padding: 5px 9px;
-      border-radius: 8px;
-      background: var(--sage-soft);
-      color: var(--ink);
-      font-weight: 500;
-      line-height: 1.3;
-      word-break: break-word;
-    }
-
-    .day-pill.milestone {
-      background: var(--terracotta-soft);
-      color: #7A3520;
-    }
-
-    .day-pill.daily3 {
-      background: var(--ochre-soft);
-      color: #6E4E1B;
-    }
-
-    /* Desktop 7-Column Full Month Grid */
     @media (min-width: 820px) {
       .weekdays-row {
-        display: grid;
-        grid-template-columns: repeat(7, minmax(0, 1fr));
-        gap: 8px;
-        margin-bottom: 8px;
-        text-align: center;
-        font-size: 0.78rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: var(--ink-muted);
+        display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; margin-bottom: 8px;
+        text-align: center; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted);
       }
-
-      .month-grid {
-        grid-template-columns: repeat(7, minmax(0, 1fr));
-        gap: 8px;
-      }
-
-      .day-cell {
-        min-height: 122px;
-        padding: 10px;
-      }
-
-      .day-cell.other-month {
-        display: flex;
-        opacity: 0.42;
-        background: var(--bg);
-      }
-
-      .day-weekday-mobile, .day-open-cue {
-        display: none;
-      }
-
-      .day-pill {
-        font-size: 0.75rem;
-        padding: 4px 7px;
-      }
+      .month-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+      .day-cell { min-height: 122px; padding: 10px; }
+      .day-cell.other-month { display: flex; opacity: 0.42; background: var(--bg); }
+      .day-weekday-mobile, .day-open-cue { display: none; }
+      .day-pill { font-size: 0.75rem; padding: 4px 7px; }
     }
 
-    /* Macro (Year View) */
-    .seasons-card {
-      margin-bottom: 24px;
-    }
-
-    .season-bar-row {
-      margin-bottom: 14px;
-    }
-
-    .season-bar-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.86rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      gap: 8px;
-    }
-
-    .season-track {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 3px;
-      background: var(--bg);
-      padding: 4px;
-      border-radius: var(--radius-pill);
-      border: 1px solid var(--border);
-    }
-
-    .season-seg {
-      height: 12px;
-      border-radius: 4px;
-      background: transparent;
-    }
-
+    .seasons-card { margin-bottom: 24px; }
+    .season-bar-row { margin-bottom: 14px; }
+    .season-bar-label { display: flex; justify-content: space-between; font-size: 0.86rem; font-weight: 600; margin-bottom: 6px; gap: 8px; }
+    .season-track { display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; background: var(--bg); padding: 4px; border-radius: var(--radius-pill); border: 1px solid var(--border); }
+    .season-seg { height: 12px; border-radius: 4px; background: transparent; }
     .season-seg.active.sage { background: var(--sage); }
     .season-seg.active.terra { background: var(--terracotta); }
     .season-seg.active.ochre { background: var(--ochre); }
 
-    .year-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-      gap: 14px;
-    }
+    .year-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+    .mini-month { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; cursor: pointer; }
+    .mini-month:hover { border-color: var(--sage); transform: translateY(-2px); }
+    .mini-month-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 700; }
+    .mini-dots { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 0.72rem; color: var(--ink-muted); }
+    .mini-day { padding: 3px 0; border-radius: 4px; }
+    .mini-day.has-event { background: var(--sage-soft); color: var(--sage); font-weight: 700; }
+    .mini-day.is-today { background: var(--sage); color: #fff; font-weight: 700; }
 
-    .mini-month {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 14px;
-      cursor: pointer;
-      transition: border-color 0.15s ease, transform 0.15s ease;
-    }
+    .overlay { position: fixed; inset: 0; background: rgba(31, 36, 33, 0.45); z-index: 50; display: none; justify-content: flex-end; }
+    .overlay.open { display: flex; }
+    .drawer { width: 100%; max-width: 440px; background: var(--surface); height: 100%; padding: 22px 18px; display: flex; flex-direction: column; overflow-y: auto; box-shadow: var(--shadow-md); }
+    .modal-center { position: fixed; inset: 0; background: rgba(31, 36, 33, 0.55); z-index: 60; display: none; place-items: center; padding: 16px; }
+    .modal-center.open { display: grid; }
+    .modal-box { background: var(--surface); border-radius: var(--radius-lg); max-width: 480px; width: 100%; padding: 24px; max-height: 90vh; overflow-y: auto; }
+    .input-field { width: 100%; padding: 11px 14px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--bg); font-family: inherit; font-size: 0.95rem; color: var(--ink); margin-bottom: 10px; }
+    .dump-item { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px; margin-bottom: 10px; }
+    .dump-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 
-    .mini-month:hover {
-      border-color: var(--sage);
-      transform: translateY(-2px);
-    }
-
-    .mini-month-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-
-    .mini-dots {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 4px;
-      text-align: center;
-      font-size: 0.72rem;
-      color: var(--ink-muted);
-    }
-
-    .mini-day {
-      padding: 3px 0;
-      border-radius: 4px;
-    }
-
-    .mini-day.has-event {
-      background: var(--sage-soft);
-      color: var(--sage);
-      font-weight: 700;
-    }
-
-    .mini-day.is-today {
-      background: var(--sage);
-      color: #fff;
-      font-weight: 700;
-    }
-
-    /* Slide-over Brain Dump Drawer & Modals */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(31, 36, 33, 0.45);
-      z-index: 50;
-      display: none;
-      justify-content: flex-end;
-    }
-
-    .overlay.open {
-      display: flex;
-    }
-
-    .drawer {
-      width: 100%;
-      max-width: 440px;
-      background: var(--surface);
-      height: 100%;
-      padding: 22px 18px;
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-      box-shadow: var(--shadow-md);
-    }
-
-    .modal-center {
-      position: fixed;
-      inset: 0;
-      background: rgba(31, 36, 33, 0.55);
-      z-index: 60;
-      display: none;
-      place-items: center;
-      padding: 16px;
-    }
-
-    .modal-center.open {
-      display: grid;
-    }
-
-    .modal-box {
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-      max-width: 480px;
-      width: 100%;
-      padding: 24px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .input-field {
-      width: 100%;
-      padding: 11px 14px;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      background: var(--bg);
-      font-family: inherit;
-      font-size: 0.95rem;
-      color: var(--ink);
-      margin-bottom: 10px;
-    }
-
-    .dump-item {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 12px;
-      margin-bottom: 10px;
-    }
-
-    .dump-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
-
-    /* Focus Sanctuary Overlay */
-    .focus-sanctuary {
-      position: fixed;
-      inset: 0;
-      background: var(--ink);
-      color: #F6F4EF;
-      z-index: 70;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      text-align: center;
-    }
-
-    .focus-sanctuary.open {
-      display: flex;
-    }
-
-    .breath-circle {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      background: rgba(227, 235, 230, 0.14);
-      border: 2px solid var(--sage-soft);
-      display: grid;
-      place-items: center;
-      margin: 24px auto;
-      animation: breathe 8s ease-in-out infinite;
-    }
-
-    @keyframes breathe {
-      0%, 100% { transform: scale(0.92); opacity: 0.75; }
-      50% { transform: scale(1.08); opacity: 1; }
-    }
-
-    .timer-display {
-      font-family: 'Fraunces', serif;
-      font-size: 2.4rem;
-    }
+    .focus-sanctuary { position: fixed; inset: 0; background: var(--ink); color: #F6F4EF; z-index: 70; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; }
+    .focus-sanctuary.open { display: flex; }
+    .breath-circle { width: 150px; height: 150px; border-radius: 50%; background: rgba(227, 235, 230, 0.14); border: 2px solid var(--sage-soft); display: grid; place-items: center; margin: 24px auto; animation: breathe 8s ease-in-out infinite; }
+    @keyframes breathe { 0%, 100% { transform: scale(0.92); opacity: 0.75; } 50% { transform: scale(1.08); opacity: 1; } }
+    .timer-display { font-family: 'Fraunces', serif; font-size: 2.4rem; }
   </style>
 </head>
 <body>
 
-  <!-- Storage Sandbox Warning (Shown automatically if hosted inside Google Sites iframe) -->
-  <div id="storageBanner" class="storage-banner">
-    <strong>Note on Google Sites hosting:</strong> Google Sites embeds code inside a sandboxed iframe that resets browser storage on reload. Host this <code>index.html</code> file on <strong>Netlify Drop</strong> or <strong>GitHub Pages</strong> so your tasks save automatically, or use the Backup JSON button in Settings.
-  </div>
-
-  <!-- Top Navigation -->
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
         <div class="brand-icon">◔</div>
         <span class="brand-title">Horizon &amp; Now</span>
+        <span id="syncStatus" class="sync-pill offline">Connecting...</span>
       </div>
 
       <nav class="zoom-switcher" aria-label="Time horizon">
@@ -930,7 +272,6 @@
   </header>
 
   <main class="container">
-    <!-- MICRO VIEW: DAY COCKPIT -->
     <section id="view-day" class="view-section active">
       <div class="micro-header">
         <div class="eyebrow">
@@ -939,9 +280,7 @@
           <span id="selectedDateFull"></span>
         </div>
         <h1 class="micro-title" id="dayHeadline">One step at a time. You are right here.</h1>
-
         <div class="season-pills" id="activeSeasonsPills"></div>
-
         <div class="hero-actions">
           <button class="btn-primary" id="enterFocusBtn">◉ Enter Focus Sanctuary</button>
           <button class="btn-secondary" id="backToTodayBtn" style="display:none;">← Return to Today</button>
@@ -949,7 +288,6 @@
       </div>
 
       <div class="micro-grid">
-        <!-- Left: Daily 3 -->
         <div class="card">
           <div class="section-head">
             <div>
@@ -958,11 +296,9 @@
             </div>
             <div class="slot-counter"><span id="daily3Count">0</span> / 3<br>slots</div>
           </div>
-
           <div class="task-list" id="daily3List"></div>
         </div>
 
-        <!-- Right: Energy Rhythm & Scheduled Milestones -->
         <div class="card">
           <div class="section-head">
             <div>
@@ -971,21 +307,17 @@
             </div>
             <button class="btn-secondary" id="addEventBtn" style="padding:6px 12px;font-size:0.8rem;">+ Event</button>
           </div>
-
           <div id="dayEventsContainer" style="margin-bottom:14px;"></div>
-
           <div class="rhythm-block">
             <div class="rhythm-time">Morning · Deep Work</div>
             <div class="rhythm-name">Creative &amp; Strategic Creation</div>
             <div class="section-sub">Protect 90–120 mins before opening messages.</div>
           </div>
-
           <div class="rhythm-block afternoon">
             <div class="rhythm-time">Afternoon · People &amp; Ops</div>
             <div class="rhythm-name">Calls, Client Follow-ups &amp; Admin</div>
             <div class="section-sub">Batch reactive tasks when creative energy dips.</div>
           </div>
-
           <div class="rhythm-block evening">
             <div class="rhythm-time">Evening · Hard Shutdown</div>
             <div class="rhythm-name">Close Tabs &amp; Step Into Life</div>
@@ -995,7 +327,6 @@
       </div>
     </section>
 
-    <!-- MESO VIEW: FULL MONTH -->
     <section id="view-month" class="view-section">
       <div class="month-header">
         <div class="month-nav">
@@ -1006,14 +337,12 @@
         <button class="btn-secondary" id="monthAddEventBtn">+ Schedule Milestone</button>
       </div>
       <p class="month-hint">Tap any day below to open its Daily 3 &amp; focus cockpit.</p>
-
       <div class="weekdays-row">
         <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
       </div>
       <div class="month-grid" id="monthGrid"></div>
     </section>
 
-    <!-- MACRO VIEW: YEAR & SEASONS -->
     <section id="view-year" class="view-section">
       <div class="month-header">
         <div>
@@ -1022,7 +351,6 @@
         </div>
         <button class="btn-secondary" id="addSeasonBtn">+ Add Season / Arc</button>
       </div>
-
       <div class="card seasons-card">
         <div class="section-head">
           <div>
@@ -1032,12 +360,10 @@
         </div>
         <div id="seasonsList"></div>
       </div>
-
       <div class="year-grid" id="yearGrid"></div>
     </section>
   </main>
 
-  <!-- Brain Dump Drawer -->
   <div class="overlay" id="dumpOverlay">
     <div class="drawer">
       <div class="section-head">
@@ -1047,17 +373,14 @@
         </div>
         <button class="btn-icon" id="closeDumpBtn" aria-label="Close">✕</button>
       </div>
-
       <form id="dumpForm" style="margin-bottom:18px;">
         <input type="text" id="dumpInput" class="input-field" placeholder="What's taking up mental RAM?" required />
         <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Capture &amp; Release</button>
       </form>
-
       <div id="dumpList" style="flex:1;"></div>
     </div>
   </div>
 
-  <!-- Add Event / Milestone Modal -->
   <div class="modal-center" id="eventModal">
     <div class="modal-box">
       <div class="section-head">
@@ -1079,7 +402,6 @@
     </div>
   </div>
 
-  <!-- Add Season Modal -->
   <div class="modal-center" id="seasonModal">
     <div class="modal-box">
       <div class="section-head">
@@ -1098,14 +420,13 @@
     </div>
   </div>
 
-  <!-- Settings & Data Backup Modal -->
   <div class="modal-center" id="settingsModal">
     <div class="modal-box">
       <div class="section-head">
-        <h2>Data &amp; Portability</h2>
+        <h2>Data &amp; Cloud Sync</h2>
         <button class="btn-icon" id="closeSettingsModal">✕</button>
       </div>
-      <p class="section-sub" style="margin-bottom:16px;">Your tasks are stored locally in your browser. Export a JSON backup anytime or clear sample items to start fresh.</p>
+      <p class="section-sub" style="margin-bottom:16px;">Connected to Firebase Realtime Database (<code>calendar-58a9c</code>). Tasks sync across all devices automatically.</p>
       <div style="display:flex;flex-direction:column;gap:10px;">
         <button class="btn-primary" id="exportJsonBtn" style="justify-content:center;">↓ Download JSON Backup</button>
         <label class="btn-secondary" style="justify-content:center;cursor:pointer;">
@@ -1117,13 +438,10 @@
     </div>
   </div>
 
-  <!-- Focus Sanctuary -->
   <div class="focus-sanctuary" id="focusSanctuary">
     <div class="eyebrow" style="color:#A7B5AD;">FOCUS SANCTUARY · SINGLE-TASK MODE</div>
     <h2 id="focusTaskTitle" style="font-size:1.8rem;max-width:520px;margin-top:8px;">Deep Work Session</h2>
-    <div class="breath-circle">
-      <div class="timer-display" id="timerDisplay">25:00</div>
-    </div>
+    <div class="breath-circle"><div class="timer-display" id="timerDisplay">25:00</div></div>
     <p style="color:#A7B5AD;font-size:0.9rem;max-width:360px;margin-bottom:24px;">Everything else is safely held outside this room. Just breathe and take the next small step.</p>
     <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
       <button class="btn-primary" id="toggleTimerBtn">Pause Timer</button>
@@ -1132,31 +450,24 @@
     </div>
   </div>
 
-  <script>
-    // --- Storage Resilience & Google Sites Sandbox Detection ---
-    const STORAGE_KEY = 'horizon_now_state_v2';
-    let memoryFallback = null;
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
+    import { getDatabase, ref, set, onValue } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js';
 
-    function isStorageAvailable() {
-      try {
-        const test = '__storage_test__';
-        window.localStorage.setItem(test, test);
-        window.localStorage.removeItem(test);
-        return window.self === window.top; // Warn if inside an iframe like Google Sites
-      } catch (e) {
-        return false;
-      }
-    }
+    const SECRET_VAULT_KEY = "my_secret_vault_9482";
+    const firebaseConfig = {
+      apiKey: "AIzaSyCC5yHGVdn5JeTvDVQTfL4EayXAl_VPwlw",
+      authDomain: "calendar-58a9c.firebaseapp.com",
+      databaseURL: "https://calendar-58a9c-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "calendar-58a9c",
+      storageBucket: "calendar-58a9c.firebasestorage.app",
+      messagingSenderId: "399441726592",
+      appId: "1:399441726592:web:35da29ed92f66552032a65"
+    };
 
-    if (!isStorageAvailable()) {
-      document.getElementById('storageBanner').classList.add('visible');
-    }
-
+    const STORAGE_KEY = 'horizon_now_state_v3';
     function toISO(date) {
-      const y = date.getFullYear();
-      const m = String(date.getMonth() + 1).padStart(2, '0');
-      const d = String(date.getDate()).padStart(2, '0');
-      return `${y}-${m}-${d}`;
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     }
 
     const todayObj = new Date();
@@ -1165,43 +476,73 @@
     const defaultState = {
       dailyTasks: {
         [TODAY_ISO]: [
-          { id: 't1', title: 'Finalize Q4 Launch Narrative & Landing Page Copy', block: 'Morning Deep Work', done: false },
-          { id: 't2', title: 'Review Monthly Cashflow & Runway Numbers', block: 'Afternoon People & Ops', done: false }
+          { id: 't1', title: 'Finalize Q4 Launch Narrative & Landing Page Copy', block: 'Morning Deep Work', done: false }
         ]
       },
-      events: [
-        { id: 'e1', date: TODAY_ISO, title: 'Founder Strategy Check-in', type: 'appointment' }
-      ],
-      dump: [
-        { id: 'd1', text: 'Research podcast guests for next quarter' },
-        { id: 'd2', text: 'Redesign onboarding welcome email sequence' }
-      ],
+      events: [],
+      dump: [],
       seasons: [
-        { id: 's1', title: 'Q4 · Flagship Product Launch & Founder Tour', startMonth: 10, endMonth: 12, color: 'sage' },
-        { id: 's2', title: 'Nov–Dec · Year-End Profitability & Rest Reset', startMonth: 11, endMonth: 12, color: 'terra' }
+        { id: 's1', title: 'Q4 · Flagship Product Launch', startMonth: 10, endMonth: 12, color: 'sage' }
       ]
     };
 
-    function loadState() {
+    function loadLocalState() {
       try {
         const raw = window.localStorage.getItem(STORAGE_KEY);
-        if (raw) return JSON.parse(raw);
+        if (raw) return normalizeState(JSON.parse(raw));
       } catch (e) {}
-      return memoryFallback || JSON.parse(JSON.stringify(defaultState));
+      return JSON.parse(JSON.stringify(defaultState));
     }
 
-    let state = loadState();
+    function normalizeState(raw) {
+      return {
+        dailyTasks: raw?.dailyTasks || {},
+        events: Array.isArray(raw?.events) ? raw.events : [],
+        dump: Array.isArray(raw?.dump) ? raw.dump : [],
+        seasons: Array.isArray(raw?.seasons) ? raw.seasons : []
+      };
+    }
+
+    let state = loadLocalState();
+    let dbRef = null;
+    const syncBadge = document.getElementById('syncStatus');
+
+    try {
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      dbRef = ref(db, SECRET_VAULT_KEY);
+
+      onValue(dbRef, (snapshot) => {
+        syncBadge.textContent = '● Cloud Synced';
+        syncBadge.classList.remove('offline');
+        if (snapshot.exists()) {
+          state = normalizeState(snapshot.val());
+          try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+          updateDumpBadge();
+          switchView(currentView);
+        } else {
+          set(dbRef, state);
+        }
+      }, (err) => {
+        console.error('Firebase sync error:', err);
+        syncBadge.textContent = 'Check DB Rules';
+        syncBadge.classList.add('offline');
+      });
+    } catch (e) {
+      console.error('Firebase init failed:', e);
+      syncBadge.textContent = 'Local Only';
+    }
 
     function saveState() {
-      memoryFallback = state;
-      try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch (e) {
-        document.getElementById('storageBanner').classList.add('visible');
+      try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+      if (dbRef) {
+        syncBadge.textContent = 'Syncing...';
+        set(dbRef, state)
+          .then(() => { syncBadge.textContent = '● Cloud Synced'; syncBadge.classList.remove('offline'); })
+          .catch(() => { syncBadge.textContent = 'Check DB Rules'; syncBadge.classList.add('offline'); });
       }
     }
 
-    // --- Navigation State ---
     let currentView = 'day';
     let selectedDateISO = TODAY_ISO;
     let viewYear = todayObj.getFullYear();
@@ -1209,22 +550,15 @@
 
     function switchView(view) {
       currentView = view;
-      document.querySelectorAll('.zoom-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.view === view);
-      });
-      document.querySelectorAll('.view-section').forEach(sec => {
-        sec.classList.toggle('active', sec.id === `view-${view}`);
-      });
+      document.querySelectorAll('.zoom-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.toggle('active', sec.id === `view-${view}`));
       if (view === 'day') renderDayView();
       if (view === 'month') renderMonthView();
       if (view === 'year') renderYearView();
     }
 
-    document.querySelectorAll('.zoom-btn').forEach(btn => {
-      btn.addEventListener('click', () => switchView(btn.dataset.view));
-    });
+    document.querySelectorAll('.zoom-btn').forEach(btn => btn.addEventListener('click', () => switchView(btn.dataset.view)));
 
-    // --- Render Day (Micro) View ---
     function renderDayView() {
       const [y, m, d] = selectedDateISO.split('-').map(Number);
       const dateObj = new Date(y, m - 1, d);
@@ -1232,25 +566,13 @@
 
       document.getElementById('navDayBtn').textContent = isToday ? 'Today' : `${dateObj.toLocaleString('en-US', { month: 'short' })} ${d}`;
       document.getElementById('dayEyebrowLabel').textContent = isToday ? 'PRESENT MOMENT · MICRO COCKPIT' : 'DAY PLANNER · MICRO COCKPIT';
-      document.getElementById('selectedDateFull').textContent = dateObj.toLocaleDateString('en-US', {
-        weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
-      }).toUpperCase();
-
-      document.getElementById('dayHeadline').textContent = isToday
-        ? 'One step at a time. You are right here.'
-        : `Designing ${dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} with calm intention.`;
-
+      document.getElementById('selectedDateFull').textContent = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase();
+      document.getElementById('dayHeadline').textContent = isToday ? 'One step at a time. You are right here.' : `Designing ${dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} with calm intention.`;
       document.getElementById('backToTodayBtn').style.display = isToday ? 'none' : 'inline-flex';
 
-      // Active Seasons Pills
-      const monthNum = m;
-      const activeSeasons = state.seasons.filter(s => monthNum >= s.startMonth && monthNum <= s.endMonth);
-      const pillsEl = document.getElementById('activeSeasonsPills');
-      pillsEl.innerHTML = activeSeasons.map(s =>
-        `<span class="season-pill ${s.color === 'terra' ? 'terra' : ''}">${escapeHtml(s.title)}</span>`
-      ).join('');
+      const activeSeasons = state.seasons.filter(s => m >= s.startMonth && m <= s.endMonth);
+      document.getElementById('activeSeasonsPills').innerHTML = activeSeasons.map(s => `<span class="season-pill ${s.color === 'terra' ? 'terra' : ''}">${escapeHtml(s.title)}</span>`).join('');
 
-      // Daily 3 Tasks
       const tasks = state.dailyTasks[selectedDateISO] || [];
       document.getElementById('daily3Count').textContent = tasks.length;
       const listEl = document.getElementById('daily3List');
@@ -1270,18 +592,12 @@
             <button class="btn-ghost-sm" title="Send back to Brain Dump">↩</button>
           </div>
         `;
-        div.querySelector('.task-check').addEventListener('click', () => {
-          task.done = !task.done;
-          saveState();
-          renderDayView();
-        });
+        div.querySelector('.task-check').addEventListener('click', () => { task.done = !task.done; saveState(); renderDayView(); });
         div.querySelector('.btn-focus-sm').addEventListener('click', () => openFocus(task.title));
         div.querySelector('.btn-ghost-sm').addEventListener('click', () => {
           state.dump.unshift({ id: 'd' + Date.now(), text: task.title });
           state.dailyTasks[selectedDateISO] = tasks.filter(t => t.id !== task.id);
-          saveState();
-          updateDumpBadge();
-          renderDayView();
+          saveState(); updateDumpBadge(); renderDayView();
         });
         listEl.appendChild(div);
       });
@@ -1289,28 +605,18 @@
       if (tasks.length < 3) {
         const slot = document.createElement('form');
         slot.className = 'empty-slot';
-        slot.innerHTML = `
-          <input type="text" placeholder="+ Add priority #${tasks.length + 1} (max 3)..." required />
-          <button type="submit" class="btn-focus-sm">Add</button>
-        `;
+        slot.innerHTML = `<input type="text" placeholder="+ Add priority #${tasks.length + 1} (max 3)..." required /><button type="submit" class="btn-focus-sm">Add</button>`;
         slot.addEventListener('submit', (e) => {
           e.preventDefault();
           const val = slot.querySelector('input').value.trim();
           if (!val) return;
           if (!state.dailyTasks[selectedDateISO]) state.dailyTasks[selectedDateISO] = [];
-          state.dailyTasks[selectedDateISO].push({
-            id: 't' + Date.now(),
-            title: val,
-            block: 'Morning Deep Work',
-            done: false
-          });
-          saveState();
-          renderDayView();
+          state.dailyTasks[selectedDateISO].push({ id: 't' + Date.now(), title: val, block: 'Morning Deep Work', done: false });
+          saveState(); renderDayView();
         });
         listEl.appendChild(slot);
       }
 
-      // Day Events
       const dayEvents = state.events.filter(ev => ev.date === selectedDateISO);
       const evContainer = document.getElementById('dayEventsContainer');
       evContainer.innerHTML = dayEvents.map(ev => `
@@ -1319,52 +625,31 @@
           <button class="btn-ghost-sm" data-del-ev="${ev.id}">✕</button>
         </div>
       `).join('');
-
-      evContainer.querySelectorAll('[data-del-ev]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          state.events = state.events.filter(e => e.id !== btn.dataset.delEv);
-          saveState();
-          renderDayView();
-        });
-      });
+      evContainer.querySelectorAll('[data-del-ev]').forEach(btn => btn.addEventListener('click', () => {
+        state.events = state.events.filter(e => e.id !== btn.dataset.delEv);
+        saveState(); renderDayView();
+      }));
     }
 
-    document.getElementById('backToTodayBtn').addEventListener('click', () => {
-      selectedDateISO = TODAY_ISO;
-      renderDayView();
-    });
+    document.getElementById('backToTodayBtn').addEventListener('click', () => { selectedDateISO = TODAY_ISO; renderDayView(); });
 
-    // --- Render Month (Meso) View — Click Any Day to Open It ---
     function renderMonthView() {
       const firstDay = new Date(viewYear, viewMonth, 1);
-      document.getElementById('monthViewTitle').textContent = firstDay.toLocaleDateString('en-US', {
-        month: 'long', year: 'numeric'
-      });
-
+      document.getElementById('monthViewTitle').textContent = firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
       const grid = document.getElementById('monthGrid');
       grid.innerHTML = '';
 
-      // Monday = 0 ... Sunday = 6
       let startWeekday = firstDay.getDay() - 1;
       if (startWeekday < 0) startWeekday = 6;
-
       const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
       const prevMonthDays = new Date(viewYear, viewMonth, 0).getDate();
       const totalCells = Math.ceil((startWeekday + daysInMonth) / 7) * 7;
 
       for (let i = 0; i < totalCells; i++) {
-        let cellDate;
-        let isOtherMonth = false;
-
-        if (i < startWeekday) {
-          cellDate = new Date(viewYear, viewMonth - 1, prevMonthDays - startWeekday + i + 1);
-          isOtherMonth = true;
-        } else if (i >= startWeekday + daysInMonth) {
-          cellDate = new Date(viewYear, viewMonth + 1, i - (startWeekday + daysInMonth) + 1);
-          isOtherMonth = true;
-        } else {
-          cellDate = new Date(viewYear, viewMonth, i - startWeekday + 1);
-        }
+        let cellDate, isOtherMonth = false;
+        if (i < startWeekday) { cellDate = new Date(viewYear, viewMonth - 1, prevMonthDays - startWeekday + i + 1); isOtherMonth = true; }
+        else if (i >= startWeekday + daysInMonth) { cellDate = new Date(viewYear, viewMonth + 1, i - (startWeekday + daysInMonth) + 1); isOtherMonth = true; }
+        else { cellDate = new Date(viewYear, viewMonth, i - startWeekday + 1); }
 
         const iso = toISO(cellDate);
         const isToday = iso === TODAY_ISO;
@@ -1373,18 +658,11 @@
 
         const cell = document.createElement('div');
         cell.className = `day-cell ${isOtherMonth ? 'other-month' : ''} ${isToday ? 'is-today' : ''}`;
-        cell.setAttribute('role', 'button');
-        cell.setAttribute('tabindex', '0');
-
         const weekdayShort = cellDate.toLocaleDateString('en-US', { weekday: 'short' });
 
         let itemsHtml = '';
-        dayEvents.forEach(ev => {
-          itemsHtml += `<div class="day-pill ${ev.type === 'milestone' ? 'milestone' : ''}">◆ ${escapeHtml(ev.title)}</div>`;
-        });
-        dayTasks.forEach(t => {
-          itemsHtml += `<div class="day-pill daily3">${t.done ? '✓' : '•'} ${escapeHtml(t.title)}</div>`;
-        });
+        dayEvents.forEach(ev => { itemsHtml += `<div class="day-pill ${ev.type === 'milestone' ? 'milestone' : ''}">◆ ${escapeHtml(ev.title)}</div>`; });
+        dayTasks.forEach(t => { itemsHtml += `<div class="day-pill daily3">${t.done ? '✓' : '•'} ${escapeHtml(t.title)}</div>`; });
 
         cell.innerHTML = `
           <div class="day-cell-top">
@@ -1397,51 +675,22 @@
           </div>
           <div class="day-items">${itemsHtml}</div>
         `;
-
-        // Clicking ANY day opens that day directly in the Day Cockpit
         cell.addEventListener('click', () => {
-          selectedDateISO = iso;
-          viewYear = cellDate.getFullYear();
-          viewMonth = cellDate.getMonth();
-          switchView('day');
+          selectedDateISO = iso; viewYear = cellDate.getFullYear(); viewMonth = cellDate.getMonth(); switchView('day');
         });
-
         grid.appendChild(cell);
       }
     }
 
-    document.getElementById('prevMonthBtn').addEventListener('click', () => {
-      viewMonth--;
-      if (viewMonth < 0) { viewMonth = 11; viewYear--; }
-      renderMonthView();
-    });
+    document.getElementById('prevMonthBtn').addEventListener('click', () => { viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } renderMonthView(); });
+    document.getElementById('nextMonthBtn').addEventListener('click', () => { viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } renderMonthView(); });
 
-    document.getElementById('nextMonthBtn').addEventListener('click', () => {
-      viewMonth++;
-      if (viewMonth > 11) { viewMonth = 0; viewYear++; }
-      renderMonthView();
-    });
-
-    // --- Render Year (Macro) View ---
     function renderYearView() {
       document.getElementById('yearViewTitle').textContent = viewYear;
-
-      const seasonsList = document.getElementById('seasonsList');
-      seasonsList.innerHTML = state.seasons.map(s => {
+      document.getElementById('seasonsList').innerHTML = state.seasons.map(s => {
         let segs = '';
-        for (let m = 1; m <= 12; m++) {
-          const active = m >= s.startMonth && m <= s.endMonth;
-          segs += `<div class="season-seg ${active ? 'active ' + s.color : ''}"></div>`;
-        }
-        return `
-          <div class="season-bar-row">
-            <div class="season-bar-label">
-              <span>${escapeHtml(s.title)}</span>
-              <span style="color:var(--ink-muted);font-size:0.78rem;">M${s.startMonth} – M${s.endMonth}</span>
-            </div>
-            <div class="season-track">${segs}</div>
-          </div>
-        `;
+        for (let m = 1; m <= 12; m++) segs += `<div class="season-seg ${m >= s.startMonth && m <= s.endMonth ? 'active ' + s.color : ''}"></div>`;
+        return `<div class="season-bar-row"><div class="season-bar-label"><span>${escapeHtml(s.title)}</span><span style="color:var(--ink-muted);font-size:0.78rem;">M${s.startMonth} – M${s.endMonth}</span></div><div class="season-track">${segs}</div></div>`;
       }).join('');
 
       const yearGrid = document.getElementById('yearGrid');
@@ -1455,35 +704,19 @@
           const hasItem = (state.dailyTasks[iso]?.length > 0) || state.events.some(e => e.date === iso);
           daysHtml += `<div class="mini-day ${iso === TODAY_ISO ? 'is-today' : (hasItem ? 'has-event' : '')}">${d}</div>`;
         }
-
         const card = document.createElement('div');
         card.className = 'mini-month';
-        card.innerHTML = `
-          <div class="mini-month-head">
-            <span>${mDate.toLocaleDateString('en-US', { month: 'long' })}</span>
-            <span style="font-size:0.78rem;color:var(--ink-muted);">Zoom →</span>
-          </div>
-          <div class="mini-dots">${daysHtml}</div>
-        `;
-        card.addEventListener('click', () => {
-          viewMonth = m;
-          switchView('month');
-        });
+        card.innerHTML = `<div class="mini-month-head"><span>${mDate.toLocaleDateString('en-US', { month: 'long' })}</span><span style="font-size:0.78rem;color:var(--ink-muted);">Zoom →</span></div><div class="mini-dots">${daysHtml}</div>`;
+        card.addEventListener('click', () => { viewMonth = m; switchView('month'); });
         yearGrid.appendChild(card);
       }
     }
 
-    // --- Brain Dump Drawer ---
-    function updateDumpBadge() {
-      document.getElementById('dumpCount').textContent = state.dump.length;
-    }
+    function updateDumpBadge() { document.getElementById('dumpCount').textContent = state.dump.length; }
 
     function renderDumpList() {
       const list = document.getElementById('dumpList');
-      if (state.dump.length === 0) {
-        list.innerHTML = '<p class="section-sub">Your mind is clear. Nothing waiting here.</p>';
-        return;
-      }
+      if (state.dump.length === 0) { list.innerHTML = '<p class="section-sub">Your mind is clear. Nothing waiting here.</p>'; return; }
       list.innerHTML = state.dump.map(item => `
         <div class="dump-item">
           <div style="font-weight:500;">${escapeHtml(item.text)}</div>
@@ -1494,211 +727,105 @@
         </div>
       `).join('');
 
-      list.querySelectorAll('[data-promote]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const currentTasks = state.dailyTasks[selectedDateISO] || [];
-          if (currentTasks.length >= 3) {
-            alert('The Daily 3 is full for this day. Complete or release one slot first to avoid overwhelm.');
-            return;
-          }
-          const item = state.dump.find(d => d.id === btn.dataset.promote);
-          if (!item) return;
-          if (!state.dailyTasks[selectedDateISO]) state.dailyTasks[selectedDateISO] = [];
-          state.dailyTasks[selectedDateISO].push({
-            id: 't' + Date.now(),
-            title: item.text,
-            block: 'Morning Deep Work',
-            done: false
-          });
-          state.dump = state.dump.filter(d => d.id !== item.id);
-          saveState();
-          updateDumpBadge();
-          renderDumpList();
-          if (currentView === 'day') renderDayView();
-        });
-      });
+      list.querySelectorAll('[data-promote]').forEach(btn => btn.addEventListener('click', () => {
+        const currentTasks = state.dailyTasks[selectedDateISO] || [];
+        if (currentTasks.length >= 3) { alert('The Daily 3 is full for this day. Complete or release one slot first.'); return; }
+        const item = state.dump.find(d => d.id === btn.dataset.promote);
+        if (!item) return;
+        if (!state.dailyTasks[selectedDateISO]) state.dailyTasks[selectedDateISO] = [];
+        state.dailyTasks[selectedDateISO].push({ id: 't' + Date.now(), title: item.text, block: 'Morning Deep Work', done: false });
+        state.dump = state.dump.filter(d => d.id !== item.id);
+        saveState(); updateDumpBadge(); renderDumpList();
+        if (currentView === 'day') renderDayView();
+      }));
 
-      list.querySelectorAll('[data-del-dump]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          state.dump = state.dump.filter(d => d.id !== btn.dataset.delDump);
-          saveState();
-          updateDumpBadge();
-          renderDumpList();
-        });
-      });
+      list.querySelectorAll('[data-del-dump]').forEach(btn => btn.addEventListener('click', () => {
+        state.dump = state.dump.filter(d => d.id !== btn.dataset.delDump);
+        saveState(); updateDumpBadge(); renderDumpList();
+      }));
     }
 
-    document.getElementById('openDumpBtn').addEventListener('click', () => {
-      renderDumpList();
-      document.getElementById('dumpOverlay').classList.add('open');
-    });
-    document.getElementById('closeDumpBtn').addEventListener('click', () => {
-      document.getElementById('dumpOverlay').classList.remove('open');
-    });
+    document.getElementById('openDumpBtn').addEventListener('click', () => { renderDumpList(); document.getElementById('dumpOverlay').classList.add('open'); });
+    document.getElementById('closeDumpBtn').addEventListener('click', () => document.getElementById('dumpOverlay').classList.remove('open'));
     document.getElementById('dumpForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const input = document.getElementById('dumpInput');
       if (!input.value.trim()) return;
       state.dump.unshift({ id: 'd' + Date.now(), text: input.value.trim() });
       input.value = '';
-      saveState();
-      updateDumpBadge();
-      renderDumpList();
+      saveState(); updateDumpBadge(); renderDumpList();
     });
 
-    // --- Modals (Event, Season, Settings) ---
-    function openEventModal() {
-      document.getElementById('eventDateInput').value = selectedDateISO;
-      document.getElementById('eventModal').classList.add('open');
-    }
+    function openEventModal() { document.getElementById('eventDateInput').value = selectedDateISO; document.getElementById('eventModal').classList.add('open'); }
     document.getElementById('addEventBtn').addEventListener('click', openEventModal);
     document.getElementById('monthAddEventBtn').addEventListener('click', openEventModal);
-    document.getElementById('closeEventModal').addEventListener('click', () => {
-      document.getElementById('eventModal').classList.remove('open');
-    });
+    document.getElementById('closeEventModal').addEventListener('click', () => document.getElementById('eventModal').classList.remove('open'));
     document.getElementById('eventForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      state.events.push({
-        id: 'e' + Date.now(),
-        title: document.getElementById('eventTitleInput').value.trim(),
-        date: document.getElementById('eventDateInput').value,
-        type: document.getElementById('eventTypeInput').value
-      });
+      state.events.push({ id: 'e' + Date.now(), title: document.getElementById('eventTitleInput').value.trim(), date: document.getElementById('eventDateInput').value, type: document.getElementById('eventTypeInput').value });
       document.getElementById('eventTitleInput').value = '';
       document.getElementById('eventModal').classList.remove('open');
-      saveState();
-      switchView(currentView);
+      saveState(); switchView(currentView);
     });
 
-    document.getElementById('addSeasonBtn').addEventListener('click', () => {
-      document.getElementById('seasonModal').classList.add('open');
-    });
-    document.getElementById('closeSeasonModal').addEventListener('click', () => {
-      document.getElementById('seasonModal').classList.remove('open');
-    });
+    document.getElementById('addSeasonBtn').addEventListener('click', () => document.getElementById('seasonModal').classList.add('open'));
+    document.getElementById('closeSeasonModal').addEventListener('click', () => document.getElementById('seasonModal').classList.remove('open'));
     document.getElementById('seasonForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      state.seasons.push({
-        id: 's' + Date.now(),
-        title: document.getElementById('seasonTitleInput').value.trim(),
-        startMonth: Number(document.getElementById('seasonStartInput').value),
-        endMonth: Number(document.getElementById('seasonEndInput').value),
-        color: 'sage'
-      });
+      state.seasons.push({ id: 's' + Date.now(), title: document.getElementById('seasonTitleInput').value.trim(), startMonth: Number(document.getElementById('seasonStartInput').value), endMonth: Number(document.getElementById('seasonEndInput').value), color: 'sage' });
       document.getElementById('seasonTitleInput').value = '';
       document.getElementById('seasonModal').classList.remove('open');
-      saveState();
-      renderYearView();
+      saveState(); renderYearView();
     });
 
-    document.getElementById('openSettingsBtn').addEventListener('click', () => {
-      document.getElementById('settingsModal').classList.add('open');
-    });
-    document.getElementById('closeSettingsModal').addEventListener('click', () => {
-      document.getElementById('settingsModal').classList.remove('open');
-    });
-
+    document.getElementById('openSettingsBtn').addEventListener('click', () => document.getElementById('settingsModal').classList.add('open'));
+    document.getElementById('closeSettingsModal').addEventListener('click', () => document.getElementById('settingsModal').classList.remove('open'));
     document.getElementById('exportJsonBtn').addEventListener('click', () => {
       const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `horizon-now-backup-${TODAY_ISO}.json`;
-      a.click();
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `horizon-now-backup-${TODAY_ISO}.json`; a.click();
     });
-
     document.getElementById('importJsonInput').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
+      const file = e.target.files[0]; if (!file) return;
       const reader = new FileReader();
       reader.onload = (ev) => {
-        try {
-          state = JSON.parse(ev.target.result);
-          saveState();
-          updateDumpBadge();
-          switchView(currentView);
-          document.getElementById('settingsModal').classList.remove('open');
-        } catch (err) {
-          alert('Invalid backup JSON file.');
-        }
+        try { state = normalizeState(JSON.parse(ev.target.result)); saveState(); updateDumpBadge(); switchView(currentView); document.getElementById('settingsModal').classList.remove('open'); }
+        catch (err) { alert('Invalid backup JSON file.'); }
       };
       reader.readAsText(file);
     });
-
     document.getElementById('clearSampleBtn').addEventListener('click', () => {
       state = { dailyTasks: {}, events: [], dump: [], seasons: [] };
-      saveState();
-      updateDumpBadge();
-      switchView(currentView);
-      document.getElementById('settingsModal').classList.remove('open');
+      saveState(); updateDumpBadge(); switchView(currentView); document.getElementById('settingsModal').classList.remove('open');
     });
 
-    // --- Focus Sanctuary ---
-    let timerSeconds = 25 * 60;
-    let timerInterval = null;
-    let timerRunning = false;
-
+    let timerSeconds = 25 * 60, timerInterval = null, timerRunning = false;
     function updateTimerUI() {
-      const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
-      const secs = String(timerSeconds % 60).padStart(2, '0');
-      document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
+      document.getElementById('timerDisplay').textContent = `${String(Math.floor(timerSeconds / 60)).padStart(2, '0')}:${String(timerSeconds % 60).padStart(2, '0')}`;
     }
-
     function openFocus(taskTitle) {
       const tasks = state.dailyTasks[selectedDateISO] || [];
-      const fallbackTitle = tasks.find(t => !t.done)?.title || 'Present-Moment Deep Work';
-      document.getElementById('focusTaskTitle').textContent = taskTitle || fallbackTitle;
-      timerSeconds = 25 * 60;
-      updateTimerUI();
-      document.getElementById('focusSanctuary').classList.add('open');
-      startTimer();
+      document.getElementById('focusTaskTitle').textContent = taskTitle || tasks.find(t => !t.done)?.title || 'Present-Moment Deep Work';
+      timerSeconds = 25 * 60; updateTimerUI(); document.getElementById('focusSanctuary').classList.add('open'); startTimer();
     }
-
     function startTimer() {
-      clearInterval(timerInterval);
-      timerRunning = true;
-      document.getElementById('toggleTimerBtn').textContent = 'Pause Timer';
-      timerInterval = setInterval(() => {
-        if (timerSeconds > 0) {
-          timerSeconds--;
-          updateTimerUI();
-        } else {
-          clearInterval(timerInterval);
-          timerRunning = false;
-        }
-      }, 1000);
+      clearInterval(timerInterval); timerRunning = true; document.getElementById('toggleTimerBtn').textContent = 'Pause Timer';
+      timerInterval = setInterval(() => { if (timerSeconds > 0) { timerSeconds--; updateTimerUI(); } else { clearInterval(timerInterval); timerRunning = false; } }, 1000);
     }
-
     document.getElementById('enterFocusBtn').addEventListener('click', () => openFocus());
     document.getElementById('toggleTimerBtn').addEventListener('click', () => {
-      if (timerRunning) {
-        clearInterval(timerInterval);
-        timerRunning = false;
-        document.getElementById('toggleTimerBtn').textContent = 'Resume Timer';
-      } else {
-        startTimer();
-      }
+      if (timerRunning) { clearInterval(timerInterval); timerRunning = false; document.getElementById('toggleTimerBtn').textContent = 'Resume Timer'; }
+      else startTimer();
     });
     document.getElementById('focusDumpBtn').addEventListener('click', () => {
       const thought = prompt('Capture stray thought to Brain Dump:');
-      if (thought && thought.trim()) {
-        state.dump.unshift({ id: 'd' + Date.now(), text: thought.trim() });
-        saveState();
-        updateDumpBadge();
-      }
+      if (thought && thought.trim()) { state.dump.unshift({ id: 'd' + Date.now(), text: thought.trim() }); saveState(); updateDumpBadge(); }
     });
-    document.getElementById('exitFocusBtn').addEventListener('click', () => {
-      clearInterval(timerInterval);
-      timerRunning = false;
-      document.getElementById('focusSanctuary').classList.remove('open');
-    });
+    document.getElementById('exitFocusBtn').addEventListener('click', () => { clearInterval(timerInterval); timerRunning = false; document.getElementById('focusSanctuary').classList.remove('open'); });
 
     function escapeHtml(str) {
-      return String(str).replace(/[&<>"']/g, m => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-      }[m]));
+      return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
     }
 
-    // Initialize
     updateDumpBadge();
     renderDayView();
   </script>
