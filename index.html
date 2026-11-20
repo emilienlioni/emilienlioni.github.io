@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Horizon & Now — Calm Macro-to-Micro Calendar</title>
+  <title>Horizon & Now</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
     try {
       const t = localStorage.getItem('horizon_now_theme');
@@ -19,11 +19,7 @@
 
   <header class="topbar">
     <div class="topbar-inner">
-      <div class="brand">
-        <div class="brand-icon">◔</div>
-        <span class="brand-title">Horizon &amp; Now</span>
-        <span id="syncStatus" class="sync-pill offline">Connecting...</span>
-      </div>
+      <button id="authBtn" class="sync-pill offline">Sign in</button>
 
       <nav class="zoom-switcher" aria-label="Time horizon">
         <button class="zoom-btn" data-view="year">Year</button>
@@ -33,10 +29,10 @@
 
       <div class="topbar-actions">
         <button class="btn-dump" id="openDumpBtn">
-          <span>+ Brain Dump</span>
+          <span>Dump</span>
           <span class="badge" id="dumpCount">0</span>
         </button>
-        <button class="btn-icon" id="openSettingsBtn" title="Settings & Themes" aria-label="Settings">⚙</button>
+        <button class="btn-icon" id="openSettingsBtn" aria-label="Settings">⚙</button>
       </div>
     </div>
   </header>
@@ -44,55 +40,28 @@
   <main class="container">
     <section id="view-day" class="view-section active">
       <div class="micro-header">
-        <div class="eyebrow">
-          <span id="dayEyebrowLabel">PRESENT MOMENT · MICRO COCKPIT</span>
-          <span>•</span>
-          <span id="selectedDateFull"></span>
+        <div class="date-row">
+          <h1 class="micro-title" id="selectedDateFull"></h1>
+          <button class="btn-secondary" id="backToTodayBtn" style="display:none;">← Today</button>
         </div>
-        <h1 class="micro-title" id="dayHeadline">One step at a time. You are right here.</h1>
         <div class="season-pills" id="activeSeasonsPills"></div>
-        <div class="hero-actions">
-          <button class="btn-primary" id="enterFocusBtn">◉ Enter Focus Sanctuary</button>
-          <button class="btn-secondary" id="backToTodayBtn" style="display:none;">← Return to Today</button>
-        </div>
       </div>
 
       <div class="micro-grid">
         <div class="card">
           <div class="section-head">
-            <div>
-              <h2>The Daily 3</h2>
-              <p class="section-sub">Strictly capped at three essential outcomes for this day.</p>
-            </div>
-            <div class="slot-counter"><span id="daily3Count">0</span> / 3<br>slots</div>
+            <h2>Daily 3</h2>
+            <span class="slot-counter"><span id="daily3Count">0</span>/3</span>
           </div>
           <div class="task-list" id="daily3List"></div>
         </div>
 
         <div class="card">
           <div class="section-head">
-            <div>
-              <h2>Energy Rhythm</h2>
-              <p class="section-sub">Forgiving containers instead of rigid hours.</p>
-            </div>
-            <button class="btn-secondary" id="addEventBtn" style="padding:6px 12px;font-size:0.8rem;">+ Event</button>
+            <h2>Events</h2>
+            <button class="btn-secondary" id="addEventBtn" style="padding:5px 11px;font-size:0.78rem;">+ Add</button>
           </div>
-          <div id="dayEventsContainer" style="margin-bottom:14px;"></div>
-          <div class="rhythm-block">
-            <div class="rhythm-time">Morning · Deep Work</div>
-            <div class="rhythm-name">Creative &amp; Strategic Creation</div>
-            <div class="section-sub">Protect 90–120 mins before opening messages.</div>
-          </div>
-          <div class="rhythm-block afternoon">
-            <div class="rhythm-time">Afternoon · People &amp; Ops</div>
-            <div class="rhythm-name">Calls, Client Follow-ups &amp; Admin</div>
-            <div class="section-sub">Batch reactive tasks when creative energy dips.</div>
-          </div>
-          <div class="rhythm-block evening">
-            <div class="rhythm-time">Evening · Hard Shutdown</div>
-            <div class="rhythm-name">Close Tabs &amp; Step Into Life</div>
-            <div class="section-sub">Say "Shutdown complete" and leave the rest for tomorrow.</div>
-          </div>
+          <div id="dayEventsContainer"></div>
         </div>
       </div>
     </section>
@@ -101,12 +70,11 @@
       <div class="month-header">
         <div class="month-nav">
           <button class="btn-icon" id="prevMonthBtn" aria-label="Previous month">←</button>
-          <h1 class="month-title" id="monthViewTitle">November 2026</h1>
+          <h1 class="month-title" id="monthViewTitle"></h1>
           <button class="btn-icon" id="nextMonthBtn" aria-label="Next month">→</button>
         </div>
-        <button class="btn-secondary" id="monthAddEventBtn">+ Schedule Milestone</button>
+        <button class="btn-secondary" id="monthAddEventBtn">+ Event</button>
       </div>
-      <p class="month-hint">Tap any day below to open its Daily 3 &amp; focus cockpit.</p>
       <div class="weekdays-row">
         <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
       </div>
@@ -115,19 +83,10 @@
 
     <section id="view-year" class="view-section">
       <div class="month-header">
-        <div>
-          <div class="eyebrow">MACRO HORIZON · 12-MONTH ARC</div>
-          <h1 class="month-title" id="yearViewTitle">2026</h1>
-        </div>
-        <button class="btn-secondary" id="addSeasonBtn">+ Add Season / Arc</button>
+        <h1 class="month-title" id="yearViewTitle"></h1>
+        <button class="btn-secondary" id="addSeasonBtn">+ Season</button>
       </div>
-      <div class="card seasons-card">
-        <div class="section-head">
-          <div>
-            <h2>Strategic Seasons &amp; Projects</h2>
-            <p class="section-sub">See multi-month commitments at once so you never overbook next month.</p>
-          </div>
-        </div>
+      <div class="card seasons-card" id="seasonsCard">
         <div id="seasonsList"></div>
       </div>
       <div class="year-grid" id="yearGrid"></div>
@@ -137,15 +96,12 @@
   <div class="overlay" id="dumpOverlay">
     <div class="drawer">
       <div class="section-head">
-        <div>
-          <h2>Brain Dump</h2>
-          <p class="section-sub">Capture it now so your mind can let it go.</p>
-        </div>
+        <h2>Brain Dump</h2>
         <button class="btn-icon" id="closeDumpBtn" aria-label="Close">✕</button>
       </div>
-      <form id="dumpForm" style="margin-bottom:18px;">
-        <input type="text" id="dumpInput" class="input-field" placeholder="What's taking up mental RAM?" required />
-        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Capture &amp; Release</button>
+      <form id="dumpForm" style="margin-bottom:16px;">
+        <input type="text" id="dumpInput" class="input-field" placeholder="Capture thought..." required />
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Add</button>
       </form>
       <div id="dumpList" style="flex:1;"></div>
     </div>
@@ -154,20 +110,17 @@
   <div class="modal-center" id="eventModal">
     <div class="modal-box">
       <div class="section-head">
-        <h2>Schedule Milestone / Event</h2>
+        <h2>New Event</h2>
         <button class="btn-icon" id="closeEventModal">✕</button>
       </div>
       <form id="eventForm">
-        <label style="font-size:0.82rem;font-weight:600;">Title</label>
-        <input type="text" id="eventTitleInput" class="input-field" placeholder="e.g. Investor Pitch or Protected Deep Work" required />
-        <label style="font-size:0.82rem;font-weight:600;">Date</label>
+        <input type="text" id="eventTitleInput" class="input-field" placeholder="Title" required />
         <input type="date" id="eventDateInput" class="input-field" required />
-        <label style="font-size:0.82rem;font-weight:600;">Type</label>
         <select id="eventTypeInput" class="input-field">
-          <option value="milestone">Key Milestone / Launch</option>
-          <option value="appointment">Hard Appointment / Call</option>
+          <option value="milestone">Milestone</option>
+          <option value="appointment">Appointment</option>
         </select>
-        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Save to Calendar</button>
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Save</button>
       </form>
     </div>
   </div>
@@ -175,17 +128,14 @@
   <div class="modal-center" id="seasonModal">
     <div class="modal-box">
       <div class="section-head">
-        <h2>New Strategic Season</h2>
+        <h2>New Season</h2>
         <button class="btn-icon" id="closeSeasonModal">✕</button>
       </div>
       <form id="seasonForm">
-        <label style="font-size:0.82rem;font-weight:600;">Season / Project Name</label>
-        <input type="text" id="seasonTitleInput" class="input-field" placeholder="e.g. Q1 · Product V2 Build" required />
-        <label style="font-size:0.82rem;font-weight:600;">Start Month (1–12)</label>
-        <input type="number" id="seasonStartInput" class="input-field" min="1" max="12" value="1" required />
-        <label style="font-size:0.82rem;font-weight:600;">End Month (1–12)</label>
-        <input type="number" id="seasonEndInput" class="input-field" min="1" max="12" value="3" required />
-        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Add Arc</button>
+        <input type="text" id="seasonTitleInput" class="input-field" placeholder="Season name" required />
+        <input type="number" id="seasonStartInput" class="input-field" min="1" max="12" placeholder="Start month (1–12)" required />
+        <input type="number" id="seasonEndInput" class="input-field" min="1" max="12" placeholder="End month (1–12)" required />
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Save</button>
       </form>
     </div>
   </div>
@@ -193,43 +143,40 @@
   <div class="modal-center" id="settingsModal">
     <div class="modal-box">
       <div class="section-head">
-        <h2>Themes &amp; Data</h2>
+        <h2>Settings</h2>
         <button class="btn-icon" id="closeSettingsModal">✕</button>
       </div>
 
-      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:6px;">Visual Theme</label>
-      <select id="themeSelect" class="input-field" style="margin-bottom:18px;">
-        <option value="paper">Warm Paper (Default)</option>
-        <option value="midnight">Midnight Focus (Dark)</option>
-        <option value="nordic">Nordic Mist (Cool Light)</option>
+      <select id="themeSelect" class="input-field" style="margin-bottom:16px;">
+        <option value="paper">Warm Paper</option>
+        <option value="midnight">Midnight Dark</option>
+        <option value="nordic">Nordic Mist</option>
       </select>
 
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <button class="btn-primary" id="exportJsonBtn" style="justify-content:center;">↓ Download JSON Backup</button>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn-primary" id="exportJsonBtn" style="justify-content:center;">Export JSON</button>
         <label class="btn-secondary" style="justify-content:center;cursor:pointer;">
-          ↑ Restore from JSON Backup
+          Import JSON
           <input type="file" id="importJsonInput" accept=".json" style="display:none;" />
         </label>
-        <button class="btn-secondary" id="clearSampleBtn" style="justify-content:center;color:var(--terracotta);">Clear All Sample Data</button>
+        <button class="btn-secondary" id="clearSampleBtn" style="justify-content:center;color:var(--terracotta);">Clear Data</button>
+        <button class="btn-secondary" id="signOutBtn" style="justify-content:center;display:none;">Sign Out</button>
       </div>
     </div>
   </div>
 
   <div class="focus-sanctuary" id="focusSanctuary">
-    <div class="eyebrow" style="color:#A7B5AD;">FOCUS SANCTUARY · SINGLE-TASK MODE</div>
-    <h2 id="focusTaskTitle" style="font-size:1.8rem;max-width:520px;margin-top:8px;">Deep Work Session</h2>
+    <h2 id="focusTaskTitle" style="font-size:1.6rem;max-width:480px;"></h2>
     <div class="breath-circle"><div class="timer-display" id="timerDisplay">25:00</div></div>
-    <p style="color:#A7B5AD;font-size:0.9rem;max-width:360px;margin-bottom:24px;">Everything else is safely held outside this room. Just breathe and take the next small step.</p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
-      <button class="btn-primary" id="toggleTimerBtn">Pause Timer</button>
-      <button class="btn-secondary" id="focusDumpBtn">+ Capture Stray Thought</button>
-      <button class="btn-secondary" id="exitFocusBtn">Exit Sanctuary</button>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+      <button class="btn-primary" id="toggleTimerBtn">Pause</button>
+      <button class="btn-secondary" id="focusDumpBtn">+ Dump</button>
+      <button class="btn-secondary" id="exitFocusBtn">Exit</button>
     </div>
   </div>
 
   <script>
     window.APP_CONFIG = {
-      secretVaultKey: "my_secret_vault_9482",
       firebaseConfig: {
         apiKey: "AIzaSyCC5yHGVdn5JeTvDVQTfL4EayXAl_VPwlw",
         authDomain: "calendar-58a9c.firebaseapp.com",
